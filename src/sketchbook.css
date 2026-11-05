@@ -1,0 +1,86 @@
+#book-canvas {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: min(72vh, 720px);
+  min-height: 380px;
+  isolation: isolate;
+  contain: layout paint;
+}
+
+#book-canvas::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 12% 4% 7%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(169, 131, 86, .08), transparent 69%);
+  pointer-events: none;
+}
+
+#book-canvas .sketchbook-webgl {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .45s ease;
+}
+
+#book-canvas.book-is-ready .sketchbook-webgl { opacity: 1; }
+
+#book-canvas > img,
+#book-canvas > picture {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: auto;
+  height: 82%;
+  max-width: 82%;
+  object-fit: contain;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  box-shadow: 0 24px 64px #0007, 0 0 0 8px #28221c;
+  transition: opacity .3s;
+}
+
+#book-canvas.book-is-ready > img,
+#book-canvas.book-is-ready > picture { opacity: 0; pointer-events: none; }
+#book-canvas.book-is-fallback > img,
+#book-canvas.book-is-fallback > picture { opacity: 1; }
+
+#book-canvas .sketchbook-fallback-viewport {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 82%;
+  aspect-ratio: 2 / 3;
+  max-width: 82%;
+  overflow: hidden;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  box-shadow: 0 24px 64px #0007, 0 0 0 8px #28221c;
+}
+#book-canvas .sketchbook-fallback-viewport img {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  max-width: none;
+  object-fit: cover;
+}
+#book-canvas.book-is-ready .sketchbook-fallback-viewport { opacity: 0; pointer-events: none; }
+
+@media (max-width: 800px) {
+  #book-canvas { height: min(56vh, 520px); min-height: 300px; }
+}
+
+@media (max-width: 480px) {
+  #book-canvas { height: min(48vh, 410px); min-height: 280px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #book-canvas .sketchbook-webgl, #book-canvas > img, #book-canvas > picture { transition: none; }
+}
+.reduced-motion #book-canvas .sketchbook-webgl,
+.reduced-motion #book-canvas > img,
+.reduced-motion #book-canvas > picture { transition: none; }

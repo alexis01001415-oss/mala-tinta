@@ -1,0 +1,95 @@
+[
+  {
+    "asset": "brown_leather",
+    "channel": "diff",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_albedo_1k.jpg",
+    "page": "https://polyhaven.com/a/brown_leather",
+    "license": "CC0",
+    "authors": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset": "brown_leather",
+    "channel": "nor_gl",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_nor_gl_1k.jpg",
+    "page": "https://polyhaven.com/a/brown_leather",
+    "license": "CC0",
+    "authors": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset": "brown_leather",
+    "channel": "rough",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/brown_leather/brown_leather_rough_1k.jpg",
+    "page": "https://polyhaven.com/a/brown_leather",
+    "license": "CC0",
+    "authors": {
+      "Rob Tuytel": "All"
+    }
+  },
+  {
+    "asset": "weathered_brown_planks",
+    "channel": "diff",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/weathered_brown_planks/weathered_brown_planks_diff_1k.jpg",
+    "page": "https://polyhaven.com/a/weathered_brown_planks",
+    "license": "CC0",
+    "authors": {
+      "Dimitrios Savva": "Photography",
+      "Rico Cilliers": "Processing"
+    }
+  },
+  {
+    "asset": "weathered_brown_planks",
+    "channel": "nor_gl",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/weathered_brown_planks/weathered_brown_planks_nor_gl_1k.jpg",
+    "page": "https://polyhaven.com/a/weathered_brown_planks",
+    "license": "CC0",
+    "authors": {
+      "Dimitrios Savva": "Photography",
+      "Rico Cilliers": "Processing"
+    }
+  },
+  {
+    "asset": "weathered_brown_planks",
+    "channel": "rough",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/weathered_brown_planks/weathered_brown_planks_rough_1k.jpg",
+    "page": "https://polyhaven.com/a/weathered_brown_planks",
+    "license": "CC0",
+    "authors": {
+      "Dimitrios Savva": "Photography",
+      "Rico Cilliers": "Processing"
+    }
+  },
+  {
+    "asset": "plastered_wall_05",
+    "channel": "diff",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plastered_wall_05/plastered_wall_05_diff_1k.jpg",
+    "page": "https://polyhaven.com/a/plastered_wall_05",
+    "license": "CC0",
+    "authors": {
+      "Charlotte Baglioni": "All"
+    }
+  },
+  {
+    "asset": "plastered_wall_05",
+    "channel": "nor_gl",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plastered_wall_05/plastered_wall_05_nor_gl_1k.jpg",
+    "page": "https://polyhaven.com/a/plastered_wall_05",
+    "license": "CC0",
+    "authors": {
+      "Charlotte Baglioni": "All"
+    }
+  },
+  {
+    "asset": "plastered_wall_05",
+    "channel": "rough",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/plastered_wall_05/plastered_wall_05_rough_1k.jpg",
+    "page": "https://polyhaven.com/a/plastered_wall_05",
+    "license": "CC0",
+    "authors": {
+      "Charlotte Baglioni": "All"
+    }
+  }
+]

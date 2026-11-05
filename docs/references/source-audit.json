@@ -1,0 +1,145 @@
+[
+  {
+    "url": "https://www.dontlookup.app/",
+    "title": [
+      "Don't Look Up \u2014 a game about keeping everyone looking down"
+    ],
+    "bytes": 174525,
+    "scripts": [
+      "/assets/index-urJsVLlw.js"
+    ],
+    "signatures": {
+      "gsap": 3,
+      "three": 23,
+      "webgl": 0,
+      "lenis": 0,
+      "react": 0,
+      "astro": 0,
+      "next": 14,
+      "framer": 0,
+      "draco": 0
+    }
+  },
+  {
+    "url": "https://onecoldnight.com/",
+    "title": [
+      "The Little Match Girl"
+    ],
+    "bytes": 6652,
+    "scripts": [
+      "/_dxl/js/script.js",
+      "/_astro/index.astro_astro_type_script_index_0_lang.DGen6SHQ.js"
+    ],
+    "signatures": {
+      "gsap": 0,
+      "three": 0,
+      "webgl": 0,
+      "lenis": 0,
+      "react": 0,
+      "astro": 7,
+      "next": 0,
+      "framer": 0,
+      "draco": 0
+    }
+  },
+  {
+    "url": "https://www.31-for-31.com/",
+    "title": [
+      "31 for 31 \u00b7 One scary movie for every night of October"
+    ],
+    "bytes": 115898,
+    "scripts": [
+      "/_vercel/insights/script.js",
+      "js/zombie.js?v=20261015s",
+      "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js",
+      "https://unpkg.com/lenis@1.1.18/dist/lenis.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js",
+      "js/sound.js?v=20261015s",
+      "js/fog.js?v=20261015s",
+      "js/data.js?v=20261015s",
+      "js/animations.js?v=20261015s",
+      "js/watchlist.js?v=20261015s",
+      "js/ratings.js?v=20261015s",
+      "js/card.js?v=20261015s",
+      "js/main.js?v=20261015s"
+    ],
+    "signatures": {
+      "gsap": 4,
+      "three": 10,
+      "webgl": 0,
+      "lenis": 6,
+      "react": 0,
+      "astro": 0,
+      "next": 0,
+      "framer": 0,
+      "draco": 0
+    }
+  },
+  {
+    "url": "https://kinoria.studio/",
+    "title": [
+      "KINORIA"
+    ],
+    "bytes": 101280,
+    "scripts": [
+      "/perf/dzperf.js",
+      "/assets/intro-Btfes0-F.js"
+    ],
+    "signatures": {
+      "gsap": 0,
+      "three": 2,
+      "webgl": 0,
+      "lenis": 0,
+      "react": 0,
+      "astro": 0,
+      "next": 11,
+      "framer": 0,
+      "draco": 0
+    }
+  },
+  {
+    "url": "https://rapidkert.com/",
+    "title": [
+      "Kert\u00e9p\u00edt\u00e9s \u00e9s \u00f6nt\u00f6z\u0151rendszer Gy\u0151r | Rapidkert Kft."
+    ],
+    "bytes": 79954,
+    "scripts": [
+      "rk.6830ff10f5.js"
+    ],
+    "signatures": {
+      "gsap": 0,
+      "three": 4,
+      "webgl": 13,
+      "lenis": 0,
+      "react": 0,
+      "astro": 0,
+      "next": 0,
+      "framer": 0,
+      "draco": 0
+    }
+  },
+  {
+    "url": "https://maddogs.cosmos.studio/",
+    "title": [
+      "Mad Dogs"
+    ],
+    "bytes": 3209698,
+    "scripts": [
+      "https://static.cdn.prismic.io/prismic.min.js?repo=mad-dogs&new=true",
+      "/_nuxt/DMIb_EMZ.js",
+      "/_payload.json?85dfcf04-13fc-4fe1-bbcd-d62512267f05"
+    ],
+    "signatures": {
+      "gsap": 0,
+      "three": 0,
+      "webgl": 0,
+      "lenis": 0,
+      "react": 2,
+      "astro": 0,
+      "next": 0,
+      "framer": 0,
+      "draco": 0
+    }
+  }
+]

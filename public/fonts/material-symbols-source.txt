@@ -1,0 +1,4 @@
+Google Material Symbols — Apache License 2.0
+https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=add,bolt,chevron_left,chevron_right,clean_hands,close,content_copy,door_open,download,draw,edit,edit_note,electric_bolt,fact_check,favorite,forum,menu,sanitizer,south&display=block
+https://fonts.gstatic.com/l/font?kit=kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOejdcIkzUJPvbB--NyU9MK8DOMocyBFBdPsQSz3ge7Tu1ZxoQmqbZQCLd6_4w_TrLiMCGRPGY22DFvbhH0X&skey=b8dc2088854b122f&v=v383
+Icons: add, bolt, chevron_left, chevron_right, clean_hands, close, content_copy, door_open, download, draw, edit, edit_note, electric_bolt, fact_check, favorite, forum, menu, sanitizer, south

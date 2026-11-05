@@ -1,0 +1,181 @@
+[
+  {
+    "site": "dontlookup",
+    "htmlEvidence": {
+      "three": [
+        "as one row. Both take these; never hard-code either again. */\n        --btn-h: 44px;\n        /* The three shades of noticing: just noticed, certain, recruiting others. Shared by\n           the looking-up bar and the crowd banner so the two can never drift",
+        " rest are outlines. Reads as a\n         spec sheet at a glance, needs no bold, and colour-codes the three families on the\n         same red/ink logic the rest of the menu already uses. */\n      .mtag {\n        display: flex;\n        flex-wrap: wrap;\n     ",
+        "as .mcap and .mrow above.\n\n         Order matters here and it bit once already: the outline rule is three classes and\n         the base `.mchip.is-lead` only two, so listing the lead first let the outline's\n         colour repaint it and the solid chip ca"
+      ],
+      "gsap": [
+        "ead\n         through at 20% without ever competing with the type. Entrance timing lives in\n         GSAP (see finish()), not here \u2014 these rules only describe the rest state, which\n         means a missing GSAP still leaves a readable screen. */\n      #ov",
+        "(see finish()), not here \u2014 these rules only describe the rest state, which\n         means a missing GSAP still leaves a readable screen. */\n      #over {\n        position: fixed;\n        inset: 0;\n        display: none;\n        flex-direction: column;\n  ",
+        "`translateX(-50%)` to centre, and the ending timeline animates this row's transform\n         * \u2014 so GSAP overwrote the centring the layout depended on. Two things owning one\n         * property. Left in the flow the panel centres it for free and nothing "
+      ],
+      "importmap": []
+    },
+    "scripts": [
+      {
+        "url": "https://www.dontlookup.app/assets/index-urJsVLlw.js",
+        "bytes": 880758,
+        "evidence": {
+          "three.js": [
+            "fetch(i.href,r)}})();/**\n * @license\n * Copyright 2010-2024 Three.js Authors\n * SPDX-License-Identifier: MIT\n */const Nd=\"170\",io={ROTATE:0,DOLLY:1,PAN:2},Ts={ROTATE:0,",
+            "eat:u};if(\"setAttribute\"in e&&e.setAttribute(\"data-engine\",`three.js r${Nd}`),e.addEventListener(\"webglcontextlost\",tt,!1),e.addEventListener(\"webglcontextrestored\",vt,"
+          ],
+          "GSAP": [
+            "t.prototype),s.prototype.constructor=s,s.__proto__=t}/*!\n * GSAP 3.15.0\n * https://gsap.com\n *\n * @license Copyright 2008-2026, GreenSock. All rights reserved.\n * S",
+            "e.constructor=s,s.__proto__=t}/*!\n * GSAP 3.15.0\n * https://gsap.com\n *\n * @license Copyright 2008-2026, GreenSock. All rights reserved.\n * Subject to the terms at "
+          ],
+          "ScrollTrigger": [
+            "(t,e),t._ts<0&&Zl(t,t._tTime),t},kg=function(t,e){return(Zn.ScrollTrigger||ff(\"scrollTrigger\",e))&&Zn.ScrollTrigger.create(e,t)},zg=function(t,e,n,i,r){if(yf(t,e,r),!t._init",
+            ",t._tTime),t},kg=function(t,e){return(Zn.ScrollTrigger||ff(\"scrollTrigger\",e))&&Zn.ScrollTrigger.create(e,t)},zg=function(t,e,n,i,r){if(yf(t,e,r),!t._initted)return 1;if(!n&"
+          ],
+          "Lenis": [],
+          "WebGLRenderer": [
+            ".precision:\"highp\";const h=c(l);h!==l&&(console.warn(\"THREE.WebGLRenderer:\",l,\"not supported, using\",h,\"instead.\"),l=h);const u=e.logarithmicDepthBuffer===!0,d=e.reverseDept",
+            "\")},get:function(n){const i=e(n);return i===null&&da(\"THREE.WebGLRenderer: \"+n+\" extension not supported.\"),i}}}function Cb(s,t,e,n){const i={},r=new WeakMap;function o(u){c"
+          ],
+          "THREE.REVISION": [],
+          "Nuxt": [],
+          "Draco": [
+            "ing.hold}}}class S_ extends Bo{constructor(t){super(t),this.dracoLoader=null,this.ktx2Loader=null,this.meshoptDecoder=null,this.pluginCallbacks=[],this.register(func",
+            "on(h){e(h),r.manager.itemEnd(t)},a)}catch(h){a(h)}},n,a)}setDRACOLoader(t){return this.dracoLoader=t,this}setKTX2Loader(t){return this.ktx2Loader=t,this}setMeshoptDe"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "site": "rapidkert",
+    "htmlEvidence": {
+      "three": [
+        "n written as static\n     <link>s because the fallback path must not pay for either \u2014 a 151 KiB\n     three.js chunk fetched for a scene that will never be built is the exact\n     cost this gate exists to avoid. The build rewrites both strings to its\n     h",
+        "injector at the end of <body> can find it again. */\n  var GROUND = 'rk-ground.7f6fe42086.js';\n  var THREE_URL = '';\n\n  /* RENDERER STRINGS THAT ARE A CPU RASTERISER \u2014 and nothing else.\n\n     Every entry here names a specific software implementation: Chrom",
+        "';\n  } else {\n    h.className += ' gd-on';\n    pre(GROUND).setAttribute('data-ground', '');\n    if (THREE_URL) pre(THREE_URL);\n\n    /* The hero's entrance is gated on .gd-ready, which rk-ground.js adds once\n       the first frame is on screen. If that mod"
+      ],
+      "gsap": [],
+      "importmap": []
+    },
+    "scripts": [
+      {
+        "url": "https://rapidkert.com/rk.6830ff10f5.js",
+        "bytes": 52529,
+        "evidence": {
+          "three.js": [],
+          "GSAP": [],
+          "ScrollTrigger": [],
+          "Lenis": [],
+          "WebGLRenderer": [],
+          "THREE.REVISION": [],
+          "Nuxt": [],
+          "Draco": []
+        }
+      }
+    ]
+  },
+  {
+    "site": "kinoria",
+    "htmlEvidence": {
+      "three": [
+        "on every 2nd refresh (360 Hz: every 3rd) and never on the ones between, so this document's loops -- three's,\r\n          the site's own, and the style/layout/paint they cause -- keep one 120 Hz clock with twice the frame's budget.\r\n          Traced on the ",
+        ": none; }\n      html, body { overscroll-behavior: none; }\n      /*  One box per module, because all three used to fight over #stage.\n       *  Sized, not bare: each reads clientWidth/clientHeight off its holder\n       *  to size its drawing buffer, and a "
+      ],
+      "gsap": [],
+      "importmap": []
+    },
+    "scripts": [
+      {
+        "url": "https://kinoria.studio/assets/intro-Btfes0-F.js",
+        "bytes": 22099,
+        "evidence": {
+          "three.js": [],
+          "GSAP": [],
+          "ScrollTrigger": [],
+          "Lenis": [],
+          "WebGLRenderer": [],
+          "THREE.REVISION": [],
+          "Nuxt": [],
+          "Draco": []
+        }
+      }
+    ]
+  },
+  {
+    "site": "onecoldnight",
+    "htmlEvidence": {
+      "three": [],
+      "gsap": [],
+      "importmap": []
+    },
+    "scripts": [
+      {
+        "url": "https://onecoldnight.com/_dxl/js/script.js",
+        "bytes": 6023,
+        "evidence": {
+          "three.js": [],
+          "GSAP": [],
+          "ScrollTrigger": [],
+          "Lenis": [],
+          "WebGLRenderer": [],
+          "THREE.REVISION": [],
+          "Nuxt": [],
+          "Draco": []
+        }
+      },
+      {
+        "url": "https://onecoldnight.com/_astro/index.astro_astro_type_script_index_0_lang.DGen6SHQ.js",
+        "bytes": 529567,
+        "evidence": {
+          "three.js": [
+            ")))=>i.map(i=>d[i]);\n/**\n * @license\n * Copyright 2010-2025 Three.js Authors\n * SPDX-License-Identifier: MIT\n */const Bp=1;const Op=0,zp=1,Gp=2;const Vp=1,Hp=2;const kp",
+            "ndow.__THREE__?console.warn(\"WARNING: Multiple instances of Three.js being imported.\"):window.__THREE__=\"180\");/**\n * @license\n * Copyright 2010-2025 Three.js Authors\n "
+          ],
+          "GSAP": [],
+          "ScrollTrigger": [],
+          "Lenis": [],
+          "WebGLRenderer": [
+            ".precision:\"highp\";const u=c(l);u!==l&&(console.warn(\"THREE.WebGLRenderer:\",l,\"not supported, using\",u,\"instead.\"),l=u);const h=t.logarithmicDepthBuffer===!0,f=t.reversedDep",
+            "\")},get:function(n){const r=t(n);return r===null&&zi(\"THREE.WebGLRenderer: \"+n+\" extension not supported.\"),r}}}function ud(i,e,t,n){const r={},s=new WeakMap;function a(h){c"
+          ],
+          "THREE.REVISION": [],
+          "Nuxt": [],
+          "Draco": []
+        }
+      }
+    ]
+  },
+  {
+    "site": "maddogs",
+    "htmlEvidence": {
+      "three": [],
+      "gsap": [],
+      "importmap": []
+    },
+    "scripts": [
+      {
+        "url": "https://maddogs.cosmos.studio/_nuxt/DMIb_EMZ.js",
+        "bytes": 690198,
+        "evidence": {
+          "three.js": [],
+          "GSAP": [
+            ".prototype),e.prototype.constructor=e,e.__proto__=t}\n/*!\n * GSAP 3.12.7\n * https://gsap.com\n *\n * @license Copyright 2008-2025, GreenSock. All rights reserved.\n * S",
+            ".constructor=e,e.__proto__=t}\n/*!\n * GSAP 3.12.7\n * https://gsap.com\n *\n * @license Copyright 2008-2025, GreenSock. All rights reserved.\n * Subject to the terms at "
+          ],
+          "ScrollTrigger": [
+            "(e,t),e._ts<0&&wk(e,e._tTime),e},Tk=function(e,t){return(Ew.ScrollTrigger||Iw(\"scrollTrigger\",t))&&Ew.ScrollTrigger.create(t,e)},Sk=function(e,t,n,r,o){return Px(e,t,o),e._i",
+            ",e._tTime),e},Tk=function(e,t){return(Ew.ScrollTrigger||Iw(\"scrollTrigger\",t))&&Ew.ScrollTrigger.create(t,e)},Sk=function(e,t,n,r,o){return Px(e,t,o),e._initted?!n&&e._pt&&!"
+          ],
+          "Lenis": [],
+          "WebGLRenderer": [],
+          "THREE.REVISION": [],
+          "Nuxt": [
+            "troller}),wl=bl,kl=((null==(xl=null==window?void 0:window.__NUXT__)?void 0:xl.config)||{}).app;var xl;const Tl=(...e)=>al(Sl(),kl.buildAssetsDir,...e),Sl=(...e)=>{c",
+            "ut-in\"},Wl={name:\"layout\",mode:\"out-in\"},zl={componentName:\"NuxtLink\",prefetch:!0,prefetchOn:{visibility:!0}},Ul=null,Zl=null,Vl=!0,ql=\"nuxt-app\",Gl=36e5;function Y"
+          ],
+          "Draco": []
+        }
+      }
+    ]
+  }
+]
