@@ -1,10 +1,9 @@
 @font-face {
-  font-family: "Lora";
+  font-family: "Bowlby One SC";
   font-style: normal;
   font-display: swap;
-  font-weight: 400 700;
-  src: url("@fontsource-variable/lora/files/lora-latin-wght-normal.woff2")
-    format("woff2");
+  font-weight: 400;
+  src: url("/fonts/bowlby-one-sc-latin.woff2") format("woff2");
 }
 @font-face {
   font-family: "Raleway";
@@ -38,7 +37,7 @@
   --ink: #11110e;
   --red: #ef0606;
   --line: #ffffff29;
-  --heading: "Lora", Georgia, serif;
+  --heading: "Bowlby One SC", Impact, sans-serif;
   --body: "Raleway", sans-serif;
   --pad: clamp(24px, 5vw, 88px);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -54,7 +53,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--paper);
-  font: 400 16px/1.65 var(--body);
+  font: 400 16px/1.4 var(--body);
+  letter-spacing: 1.5px;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }

@@ -18,3 +18,8 @@ The scene maps scroll from the section's top reaching the viewport top to the se
 The book uses 64 × 20 segment meshes, arc-length-preserving curved deformation, independently textured fronts and backs, rough paper grain, individual page edges, rounded leather covers, spine, bookmark, warm key and cool fill lighting, and cast shadows. Images and font assets stay local. Texture art is rendered from the existing flash sheet; no additional download/CDN is used. Rendering stops when settled, offscreen, or the browser tab is hidden. Pixel ratio is capped at 1.75. WebGL or texture failures restore the ordinary fallback; reduced-motion selection snaps pages to their resting positions.
 
 The canvas is decorative (`aria-hidden`); retain the accessible DOM title, description, controls and selection action outside it. Keep the fallback image meaningful. For reduced-motion or no-JavaScript presentation, root can shorten the scroll section and retain ordinary buttons.
+
+
+## Edition 2
+
+The cover uses the local original collage `sketchbook-collage.webp`. Page fronts present taped flash prints; backs contain close crop studies, ink swatches and handwritten notes. Real alpha paper/tape resources are shared with the hero, character and menu. Display lettering uses Bowlby One SC loaded before canvas text generation. The generated page textures are 720 × 1020. Optional material failures keep the original flash pages usable.

@@ -36,10 +36,10 @@ function drawArt(ctx, image, index, x, y, width, height) {
     dh,
   );
 }
-const NOTES = [
-  ["Cambiar también", "es una forma", "de ser tú."],
-  ["No toda la luz", "viene de", "afuera."],
-  ["Un poco de filo.", "Mucho", "carácter."],
+const STUDIES = [
+  { heading: "Escamas", notes: ["Alternar línea fina y sombra.", "Dejar aire entre las vueltas."] },
+  { heading: "Alas", notes: ["Una mitad responde a la otra.", "El borde conserva su trazo."] },
+  { heading: "Filigrana", notes: ["Filo limpio al centro.", "Reservar el detalle para la empuñadura."] },
 ];
 
 function seededRandom(seed) {
@@ -50,124 +50,221 @@ function seededRandom(seed) {
   };
 }
 
-function paperCanvas(seed = 1) {
+const PAGE_PIXELS = { width: 720, height: 1020 };
+
+function pageCanvas() {
   const canvas = document.createElement("canvas");
-  canvas.width = 768;
-  canvas.height = 1088;
-  const ctx = canvas.getContext("2d");
-  const random = seededRandom(seed);
-  ctx.fillStyle = "#e9e4d8";
+  canvas.width = PAGE_PIXELS.width;
+  canvas.height = PAGE_PIXELS.height;
+  return { canvas, ctx: canvas.getContext("2d") };
+}
+
+// Sample actual paper fibers once. All eight sides share this inexpensive base.
+function makePaperSurface(paper) {
+  const { canvas, ctx } = pageCanvas();
+  const random = seededRandom(53);
+  ctx.fillStyle = "#e8e1d3";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < 19000; i++) {
-    const x = random() * canvas.width,
-      y = random() * canvas.height;
-    ctx.fillStyle = `rgba(${random() > 0.5 ? "255,251,237" : "89,74,53"},${random() * 0.055})`;
-    ctx.fillRect(x, y, random() * 1.7 + 0.3, random() * 2.3 + 0.3);
+  if (paper) {
+    ctx.globalCompositeOperation = "multiply";
+    ctx.globalAlpha = 0.43;
+    for (let y = 0; y < canvas.height; y += 104) {
+      for (let x = 0; x < canvas.width; x += 104) {
+        const sx = 80 + random() * (paper.width - 260);
+        const sy = 42 + random() * Math.max(1, paper.height - 166);
+        ctx.drawImage(paper, sx, sy, 104, 104, x, y, 104, 104);
+      }
+    }
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1;
   }
   const edge = ctx.createLinearGradient(0, 0, canvas.width, 0);
-  edge.addColorStop(0, "rgba(77,55,35,.09)");
-  edge.addColorStop(0.07, "rgba(77,55,35,0)");
-  edge.addColorStop(0.94, "rgba(77,55,35,0)");
-  edge.addColorStop(1, "rgba(77,55,35,.08)");
+  edge.addColorStop(0, "rgba(83,65,44,.13)");
+  edge.addColorStop(0.065, "rgba(83,65,44,0)");
+  edge.addColorStop(0.965, "rgba(83,65,44,0)");
+  edge.addColorStop(1, "rgba(83,65,44,.07)");
   ctx.fillStyle = edge;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  return { canvas, ctx };
+  return canvas;
 }
 
-function drawRule(ctx, x, y, width) {
-  ctx.strokeStyle = "rgba(37,32,27,.35)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x + width, y);
-  ctx.stroke();
-}
-
-function makePageTexture(image, index, back = false) {
-  const { canvas, ctx } = paperCanvas(index * 17 + (back ? 107 : 3));
-  const w = canvas.width,
-    h = canvas.height;
-  ctx.fillStyle = "#312d27";
-  ctx.font = "600 15px Raleway, sans-serif";
-  ctx.fillText(back ? "NOTAS AL MARGEN" : "MALA TINTA / FLASH BOOK", 68, 72);
-  ctx.textAlign = "right";
-  ctx.fillText(`0${index + 1}`, w - 68, 72);
-  ctx.textAlign = "left";
-  drawRule(ctx, 68, 93, w - 136);
-
-  if (back) {
-    ctx.font = "500 55px Lora, Georgia, serif";
-    NOTES[index].forEach((line, i) => ctx.fillText(line, 68, 214 + i * 75));
-    ctx.save();
-    ctx.globalCompositeOperation = "multiply";
-    ctx.globalAlpha = 0.76;
-    drawArt(ctx, image, index, 248, 445, 356, 532);
-    ctx.restore();
-    ctx.save();
-    ctx.translate(78, 823);
-    ctx.rotate(-0.075);
-    ctx.fillStyle = "#625244";
-    ctx.font = "400 27px Marker, cursive";
-    ctx.fillText("Hazlo tuyo.", 0, 0);
-    ctx.restore();
-  } else {
-    ctx.save();
-    ctx.globalCompositeOperation = "multiply";
-    drawArt(ctx, image, index, 80, 126, w - 160, 796);
-    ctx.restore();
-    ctx.fillStyle = "#26231f";
-    ctx.font = "500 37px Lora, Georgia, serif";
-    ctx.fillText(TITLES[index], 68, 978);
+function printHeading(ctx, text, size, x, baseline, maxWidth) {
+  ctx.save();
+  ctx.letterSpacing = "1.5px";
+  ctx.font = `400 ${size}px "Bowlby One SC", Impact, sans-serif`;
+  while (size > 16 && ctx.measureText(text).width > maxWidth) {
+    size -= 1;
+    ctx.font = `400 ${size}px "Bowlby One SC", Impact, sans-serif`;
   }
-  drawRule(ctx, 68, h - 78, w - 136);
-  ctx.fillStyle = "#585047";
-  ctx.font = "500 13px Raleway, sans-serif";
-  ctx.fillText(CATEGORIES[index], 68, h - 48);
+  ctx.fillText(text, x, baseline);
+  ctx.restore();
+}
+
+function mountPaper(ctx, width, height, paint) {
+  ctx.save();
+  ctx.shadowColor = "rgba(38,24,13,.28)";
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 4;
+  ctx.shadowBlur = 7;
+  ctx.fillStyle = "#f1ebde";
+  ctx.fillRect(-width / 2, -height / 2, width, height);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(-width / 2, -height / 2);
+  ctx.beginPath();
+  ctx.rect(0, 0, width, height);
+  ctx.clip();
+  paint();
+  ctx.restore();
+}
+
+function placeTape(ctx, image, x, y, width, angle) {
+  if (!image) return;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.globalAlpha = 0.86;
+  const height = width * image.height / image.width;
+  ctx.drawImage(image, -width / 2, -height / 2, width, height);
+  ctx.restore();
+}
+
+function pageFooter(ctx, index) {
+  const y = PAGE_PIXELS.height - 48;
+  ctx.strokeStyle = "rgba(56,48,38,.3)";
+  ctx.beginPath();
+  ctx.moveTo(48, y - 24);
+  ctx.lineTo(PAGE_PIXELS.width - 48, y - 24);
+  ctx.stroke();
+  ctx.fillStyle = "#4d453b";
+  ctx.font = "700 15px Raleway, sans-serif";
+  ctx.letterSpacing = "1.5px";
+  ctx.fillText(CATEGORIES[index], 48, y);
+  ctx.textAlign = "right";
+  ctx.fillText(`0${index + 1} / 04`, PAGE_PIXELS.width - 48, y);
+  ctx.textAlign = "left";
+  ctx.letterSpacing = "0px";
+}
+
+function drawFront(ctx, image, index, materials) {
+  const { width: w } = PAGE_PIXELS;
+  const width = index === 1 ? 610 : 520;
+  const height = index === 1 ? 516 : 666;
+  const angle = [-0.035, 0.025, -0.022, 0.036][index];
+  ctx.save();
+  ctx.translate(w / 2, 481);
+  ctx.rotate(angle);
+  mountPaper(ctx, width, height, () => {
+    // The untrimmed border reads as a real mounted proof. The drawing keeps its aspect.
+    ctx.globalCompositeOperation = "multiply";
+    drawArt(ctx, image, index, 24, 28, width - 48, height - 60);
+  });
+  placeTape(ctx, materials.masking, -width * 0.32, -height / 2 + 8, 155, -0.17);
+  placeTape(ctx, index % 2 ? materials.masking : materials.black, width * 0.32, height / 2 - 12, 121, -0.21);
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(55, 823);
+  ctx.rotate(-0.022);
+  if (materials.paper) ctx.drawImage(materials.paper, -12, -4, 575, 99);
+  ctx.fillStyle = "#211e19";
+  printHeading(ctx, TITLES[index], 38, 17, 58, 516);
+  ctx.restore();
+  pageFooter(ctx, index);
+}
+
+function drawStudy(ctx, image, index, materials) {
+  const study = STUDIES[index];
+  ctx.fillStyle = "#25211c";
+  printHeading(ctx, study.heading, 53, 53, 143, 612);
+
+  const [sx, sy, sw, sh] = artRects[index];
+  ctx.save();
+  ctx.translate(357, 437);
+  ctx.rotate([0.032, -0.047, 0.024][index]);
+  mountPaper(ctx, 555, 410, () => {
+    // Closely cropped print beside the full flash on the opposite page.
+    const cropWidth = sw * 0.68;
+    const cropHeight = Math.min(sh * 0.5, cropWidth * 0.68);
+    ctx.drawImage(image, sx + sw * 0.16, sy + sh * 0.23, cropWidth, cropHeight, 21, 21, 513, 347);
+    ctx.fillStyle = "#484137";
+    ctx.font = "600 13px Raleway, sans-serif";
+    ctx.fillText("DETALLE DEL TRAZO", 23, 389);
+  });
+  placeTape(ctx, materials.black, 135, -204, 128, 0.17);
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(66, 730);
+  ctx.rotate(-0.026);
+  ctx.fillStyle = "#50463a";
+  ctx.font = "400 22px Marker, cursive";
+  study.notes.forEach((line, i) => ctx.fillText(line, 0, i * 35));
+  ctx.restore();
+  // A real notebook's tonal tests, drawn from the same deterministic sequence.
+  const random = seededRandom(index + 133);
+  for (let swatch = 0; swatch < 4; swatch++) {
+    ctx.strokeStyle = `rgba(39,35,31,${0.1 + swatch * 0.15})`;
+    ctx.lineWidth = 2.2;
+    for (let stroke = 0; stroke < 29; stroke++) {
+      const x = 67 + swatch * 66 + stroke * 1.6;
+      const y = 849 + random() * 6;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - 5 - random() * 3, y + 22 + random() * 8);
+      ctx.stroke();
+    }
+  }
+  pageFooter(ctx, index);
+}
+
+function canvasTexture(canvas, mirrored = false) {
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
-  if (back) {
+  if (mirrored) {
     texture.repeat.x = -1;
     texture.offset.x = 1;
   }
   return texture;
 }
 
-function makeIntroTexture() {
-  const { canvas, ctx } = paperCanvas(41);
-  ctx.fillStyle = "#312d27";
-  ctx.font = "600 15px Raleway, sans-serif";
-  ctx.fillText("CUADERNO DE IDEAS / VOL. 01", 68, 72);
-  drawRule(ctx, 68, 93, 632);
-  ctx.fillStyle = "#625244";
-  ctx.font = "400 27px Marker, cursive";
+function makePageTexture(image, index, materials, back = false) {
+  const { canvas, ctx } = pageCanvas();
+  ctx.drawImage(materials.surface, 0, 0);
+  ctx.fillStyle = "#3a342c";
+  ctx.font = "700 14px Raleway, sans-serif";
+  ctx.letterSpacing = "1.5px";
+  ctx.fillText(back ? "APUNTES DE TALLER" : "MALA TINTA / CUADERNO DE FLASH", 48, 59);
+  ctx.letterSpacing = "0px";
+  if (back) drawStudy(ctx, image, index, materials);
+  else drawFront(ctx, image, index, materials);
+  return canvasTexture(canvas, back);
+}
+
+function makeIntroTexture(collage) {
+  const { canvas, ctx } = pageCanvas();
+  ctx.fillStyle = "#24221e";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (collage) ctx.drawImage(collage, 0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#e6ddca";
+  ctx.font = "700 15px Raleway, sans-serif";
+  ctx.letterSpacing = "1.5px";
+  ctx.fillText("MALA TINTA", 49, 53);
+  ctx.letterSpacing = "0px";
   ctx.save();
-  ctx.translate(91, 226);
-  ctx.rotate(-0.09);
-  ctx.fillText("Todo empieza con una raya.", 0, 0);
+  ctx.translate(45, 83);
+  ctx.rotate(-0.018);
+  printHeading(ctx, "Cuaderno", 83, 0, 80, 630);
+  printHeading(ctx, "de flash", 83, 0, 172, 624);
   ctx.restore();
-  ctx.fillStyle = "#27231f";
-  ctx.font = "500 66px Lora, Georgia, serif";
-  ["Ideas que", "no se quedan", "en papel."].forEach((line, i) =>
-    ctx.fillText(line, 68, 398 + i * 91),
-  );
-  ctx.font = "400 20px Raleway, sans-serif";
-  ctx.fillStyle = "#645c51";
-  [
-    "Una serpiente. Una polilla.",
-    "Una daga. Una flor.",
-    "",
-    "El siguiente trazo lo decides tú.",
-  ].forEach((line, i) => ctx.fillText(line, 71, 771 + i * 34));
-  drawRule(ctx, 68, 1010, 632);
-  ctx.font = "600 13px Raleway, sans-serif";
-  ctx.fillText("BOCETOS CONCEPTUALES / MALA TINTA", 68, 1040);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 4;
-  texture.repeat.x = -1;
-  texture.offset.x = 1;
-  return texture;
+  // Keep the grain in the light printed letters, too.
+  if (collage) {
+    ctx.globalAlpha = 0.12;
+    ctx.drawImage(collage, 0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+  }
+  return canvasTexture(canvas, true);
 }
 
 function grainTexture() {
@@ -732,23 +829,36 @@ export async function initSketchbook(
   }
 
   try {
-    const image = new Image();
-    image.decoding = "async";
-    image.src = "/images/flash-sheet.webp";
-    await image.decode();
-    await Promise.all([
-      document.fonts.load("500 48px Lora"),
-      document.fonts.load("600 16px Raleway"),
-      document.fonts.load("400 27px Marker"),
+    const loadImage = async (path) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = path;
+      await image.decode();
+      return image;
+    };
+    // Decorative media and fonts are optional. The four original flashes remain usable.
+    const material = (name) => loadImage(`/images/materials/${name}.webp`).catch(() => null);
+    const [image, collage, paper, masking, black] = await Promise.all([
+      loadImage("/images/flash-sheet.webp"),
+      material("sketchbook-collage"),
+      material("torn-paper"),
+      material("masking-tape"),
+      material("black-tape"),
+      Promise.allSettled([
+        document.fonts.load('400 48px "Bowlby One SC"'),
+        document.fonts.load("700 16px Raleway"),
+        document.fonts.load("400 27px Marker"),
+      ]),
     ]);
     if (disposed) return noop;
+    const printMaterials = { paper, masking, black, surface: makePaperSurface(paper) };
     const fronts = TITLES.map((_, index) =>
-      trackTexture(makePageTexture(image, index)),
+      trackTexture(makePageTexture(image, index, printMaterials)),
     );
-    const backs = NOTES.map((_, index) =>
-      trackTexture(makePageTexture(image, index, true)),
+    const backs = STUDIES.map((_, index) =>
+      trackTexture(makePageTexture(image, index, printMaterials, true)),
     );
-    const intro = trackTexture(makeIntroTexture());
+    const intro = trackTexture(makeIntroTexture(collage));
     introMesh = makeSheet(fronts[0], intro, 0, 1);
     introMesh.position.y = -0.046;
     // The exposed underside of the intro belongs to the same geometry.

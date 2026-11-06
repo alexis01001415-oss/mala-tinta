@@ -1,10 +1,5 @@
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-
-const clamp = THREE.MathUtils.clamp;
-const chapters = [0, 1 / 3, 2 / 3, 1];
+const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
+const chapters = [0, .25, .5, .75, 1];
 const chapterPhotos = [
   [
     "studio-poster.webp",
@@ -12,7 +7,7 @@ const chapterPhotos = [
   ],
   [
     "studio-maquina.webp",
-    "Máquina de bobinas de cobre en la bandeja junto a los pigmentos y el equipo rotativo.",
+    "Máquina de bobinas con bastidor negro calado, grip de acero moleteado y boquilla abierta sobre el carro de instrumental.",
   ],
   [
     "studio-ritual.webp",
@@ -22,10 +17,14 @@ const chapterPhotos = [
     "studio-sillon.webp",
     "Sillón de tatuaje con reposabrazos regulables, cuero cosido y base hidráulica.",
   ],
+  [
+    "studio-pieza.webp",
+    "Láminas de serpiente, flor, daga y polilla sujetas con pinzas sobre la repisa de dibujo.",
+  ],
 ];
 
 function chapterAt(progress) {
-  return progress < 0.18 ? 0 : progress < 0.51 ? 1 : progress < 0.82 ? 2 : 3;
+  return Math.min(chapters.length - 1, Math.round(progress * (chapters.length - 1)));
 }
 
 function announceChapter(container, section, buttons, chapter) {
@@ -68,7 +67,7 @@ function initPhotoTour(
   function syncScroll() {
     frame = 0;
     const travel = section.offsetHeight - innerHeight;
-    // With reduced motion the section can collapse to one viewport. Its four
+    // With reduced motion the section can collapse to one viewport. Its five
     // buttons continue to work without forcing visitors to scroll the page.
     if (travel > 100)
       show(
@@ -119,24 +118,28 @@ function initPhotoTour(
 }
 // Human-height interior route; intermediate points clear the chair and lamp.
 const positions = [
-  [3, 1.95, 4.4],
-  [1.15, 1.85, 2.1],
-  [-1.02, 1.62, 0.12],
-  [-0.15, 2.22, 0.85],
-  [1.55, 1.65, 0.3],
-  [1.8, 1.8, 1.35],
-  [1.5, 1.75, 2.6],
+  [2.55, 1.76, 3.90],
+  [.75, 1.82, 1.97],
+  [-1.46, 1.439, .14],
+  [-.15, 2.20, .91],
+  [2.28, 1.59, -.44],
+  [2.06, 1.75, 1.10],
+  [1.92, 1.57, 2.68],
+  [.03, 1.80, 1.83],
+  [-.82, 1.65, .65],
 ];
 const targets = [
-  [-0.3, 1.3, -0.3],
-  [-1.5, 1.3, -0.3],
-  [-1.65, 1.38, -0.36],
-  [0.2, 1.24, -0.25],
-  [1.65, 1.27, -1.44],
-  [0.7, 1.25, 0.05],
-  [0.38, 1.2, 0.1],
+  [-.32, 1.30, -.46],
+  [-1.37, 1.22, -.34],
+  [-1.62, 1.246, -.36],
+  [.17, 1.18, -.36],
+  [1.62, 1.21, -1.43],
+  [.93, 1.17, -.18],
+  [.34, 1.20, .04],
+  [-.83, 1.51, -.18],
+  [-2.40, 1.68, .06],
 ];
-const fieldsOfView = [46, 42, 30, 42, 35, 41, 43];
+const fieldsOfView = [38, 43, 27, 43, 36, 42, 40, 44, 35];
 
 /** Load once, render on demand, and leave the editorial poster as a real fallback. */
 export async function initStudio(container, { reducedMotion = false } = {}) {
@@ -144,8 +147,20 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
   const section = container.closest("#estudio") || container.parentElement;
   container.setAttribute("aria-busy", "true");
   const buttons = [...section.querySelectorAll("[data-scene]")];
+  const smallTouchScreen = window.matchMedia?.("(max-width: 740px)").matches;
+  if (smallTouchScreen || navigator.connection?.saveData || navigator.deviceMemory <= 3) {
+    return initPhotoTour(container, section, buttons, reducedMotion);
+  }
+  // Avoid downloading the engine and its decoder on the lightweight path.
+  let THREE, GLTFLoader, DRACOLoader, RoomEnvironment;
   let renderer;
   try {
+    [THREE, {GLTFLoader}, {DRACOLoader}, {RoomEnvironment}] = await Promise.all([
+      import("three"),
+      import("three/addons/loaders/GLTFLoader.js"),
+      import("three/addons/loaders/DRACOLoader.js"),
+      import("three/addons/environments/RoomEnvironment.js"),
+    ]);
     renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: devicePixelRatio < 2,
@@ -195,8 +210,11 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = .98;
   renderer.shadowMap.enabled = true;
+  // Room geometry and lights stay still. Camera motion needs no shadow redraw.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const canvas = renderer.domElement;
   canvas.setAttribute("aria-hidden", "true");
@@ -208,12 +226,12 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
   const room = new RoomEnvironment();
   const envTarget = environment.fromScene(room, 0.035);
   modelScene.environment = envTarget.texture;
-  modelScene.environmentIntensity = 0.42;
+  modelScene.environmentIntensity = .34;
   room.dispose();
   environment.dispose();
-  modelScene.add(new THREE.HemisphereLight(0xffebd0, 0x111317, 0.72));
-  const key = new THREE.DirectionalLight(0xffe2bd, 2.2);
-  key.position.set(3, 6, 5);
+  modelScene.add(new THREE.HemisphereLight(0xcddafa, 0x18120d, .43));
+  const key = new THREE.DirectionalLight(0xffd7b0, 1.8);
+  key.position.set(-1.65, 4.85, 3.2);
   key.castShadow = true;
   key.shadow.mapSize.set(
     innerWidth > 900 ? 2048 : 1024,
@@ -227,11 +245,11 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
     near: 0.5,
     far: 18,
   });
-  key.shadow.normalBias = 0.035;
-  key.shadow.bias = -0.0002;
+  key.shadow.normalBias = .008;
+  key.shadow.bias = -.00012;
   modelScene.add(key);
-  const fill = new THREE.DirectionalLight(0xb6c6ee, 0.7);
-  fill.position.set(-4, 3, 3);
+  const fill = new THREE.DirectionalLight(0xacc6ee, .76);
+  fill.position.set(3.6, 2.5, 2.6);
   modelScene.add(fill);
   const neon = new THREE.PointLight(0xff1708, 5.2, 4, 2);
   neon.position.set(0.1, 2.5, -1.35);
@@ -239,12 +257,15 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
   const task = new THREE.PointLight(0xffdd99, 2.5, 3, 2);
   task.position.set(0.58, 1.95, -0.02);
   modelScene.add(task);
-  const overhead = new THREE.PointLight(0xffd4a0, 8.5, 5, 2);
+  const overhead = new THREE.PointLight(0xffc58c, 5.8, 5, 2);
   overhead.position.set(0, 2.56, -0.6);
   modelScene.add(overhead);
-  const detail = new THREE.PointLight(0xffedcf, 3.2, 2, 2);
-  detail.position.set(-1.4, 2.1, -0.08);
+  const detail = new THREE.PointLight(0xd5e4fc, 2.35, 2, 2);
+  detail.position.set(-1.30, 1.95, -.55);
   modelScene.add(detail);
+  const archive = new THREE.PointLight(0xffd09c, 2.9, 2.5, 2);
+  archive.position.set(-1.55, 2.32, .32);
+  modelScene.add(archive);
 
   const position = new THREE.Vector3();
   const target = new THREE.Vector3();
@@ -252,8 +273,9 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
   function setCamera(progress) {
     positionCurve.getPoint(clamp(progress, 0, 1), position);
     targetCurve.getPoint(clamp(progress, 0, 1), target);
-    const segment = Math.min(Math.floor(progress * 6), 5);
-    const t = clamp(progress * 6 - segment, 0, 1);
+    const segments = positions.length - 1;
+    const segment = Math.min(Math.floor(progress * segments), segments - 1);
+    const t = clamp(progress * segments - segment, 0, 1);
     const smooth = t * t * (3 - 2 * t);
     const fov = THREE.MathUtils.lerp(
       fieldsOfView[segment],
@@ -377,6 +399,7 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
     photoTour = null;
     container.classList.remove("is-fallback");
     canvas.style.visibility = "";
+    renderer.shadowMap.needsUpdate = true;
     lastTime = 0;
     updateProgress();
   }
@@ -447,6 +470,8 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
       buttons.forEach((button, index) =>
         button.removeEventListener("click", buttonHandlers[index]),
       );
+      const textures = new Set();
+      const ownedMaterials = new Set();
       modelScene.traverse((object) => {
         object.geometry?.dispose();
         const materials = object.material
@@ -454,9 +479,15 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
             ? object.material
             : [object.material]
           : [];
-        materials.forEach((material) => material.dispose());
+        for (const material of materials) {
+          ownedMaterials.add(material);
+          for (const item of Object.values(material)) if (item?.isTexture) textures.add(item);
+        }
       });
+      textures.forEach(texture => { texture.source?.data?.close?.(); texture.dispose(); });
+      ownedMaterials.forEach(material => material.dispose());
       envTarget.dispose();
+      key.shadow.dispose();
       draco.dispose();
       renderer.dispose();
       canvas.remove();

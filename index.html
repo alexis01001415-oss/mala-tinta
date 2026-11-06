@@ -26,161 +26,104 @@
       content="https://mala-tinta-estudio-031126.fizzyoatmeal.chatgpt.site/"
     />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/bowlby-one-sc-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/press-boot.css" />
+    <script src="/press-boot.js"></script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
-    <div class="preloader" id="preloader" role="status" aria-live="polite">
-      <div class="preloader-content">
-        <span class="loader-wordmark">mala tinta</span>
-        <p>Las buenas ideas dejan marca.</p>
-        <div class="loader-track"><span id="loader-progress"></span></div>
-        <button id="skip-loader" type="button">Entrar</button>
+    <div class="press-intro" id="preloader" aria-label="Presentación de Mala Tinta" hidden>
+      <div class="press-intro__shutter" aria-hidden="true"></div>
+      <div class="press-intro__title" aria-hidden="true">
+        <span class="press-intro__mask"><span class="press-intro__word">MALA</span></span>
+        <span class="press-intro__mask"><span class="press-intro__word">TINTA.</span></span>
       </div>
+      <button id="skip-loader" type="button">Entrar al sitio</button>
     </div>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
-    <header class="header">
-      <nav class="header-nav" aria-label="Navegación principal">
-        <a href="#estudio">El estudio</a><a href="#flash">Los flashes</a>
-      </nav>
-      <a class="brand" href="#inicio" aria-label="Mala Tinta, inicio"
-        >mala tinta<span class="brand-period">.</span></a
-      >
-      <div class="header-actions">
-        <a class="button button-red button-small" href="#tu-idea"
-          ><span>Hablemos de tinta</span
-          ><span class="material-symbols-outlined" aria-hidden="true"
-            >edit</span
-          ></a
-        ><button
-          class="menu-toggle"
+    <header class="mt-header" data-site-header>
+      <a class="mt-header__logo" href="#inicio" aria-label="Mala Tinta, inicio">mala tinta<span aria-hidden="true">.</span></a>
+      <div class="mt-header__controls">
+        <a class="mt-header__cta ink-cta ink-cta--red" href="#tu-idea">
+          <span>Hablemos de tu próximo tatuaje</span>
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+        </a>
+        <button
+          class="mt-header__toggle"
+          type="button"
           aria-label="Abrir menú"
           aria-expanded="false"
           aria-controls="mobile-menu"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">menu</span
-          ><span class="material-symbols-outlined" aria-hidden="true"
-            >close</span
-          >
+          <span class="material-symbols-outlined mt-header__open-icon" aria-hidden="true">menu</span>
+          <span class="material-symbols-outlined mt-header__close-icon" aria-hidden="true">close</span>
         </button>
       </div>
     </header>
     <nav
       id="mobile-menu"
-      class="mobile-menu"
-      aria-label="Explorar Mala Tinta"
+      class="mt-nav"
+      aria-label="Navegación principal"
+      hidden
       inert
     >
-      <div class="menu-links">
-        <a href="#nosotros">La actitud</a><a href="#estudio">El estudio</a
-        ><a href="#estilos">Tu estilo</a><a href="#flash">Los flashes</a
-        ><a href="#dudas">Sin miedo</a><a href="#tu-idea">Hablemos.</a>
+      <div class="mt-nav__spread">
+        <ul class="mt-nav__links">
+          <li><a href="#nosotros" data-photo="/images/tattoo-craft.webp" data-caption="Tinta sobre piel"><span>La actitud</span></a></li>
+          <li><a href="#estudio" data-photo="/models/studio-poster.webp" data-caption="El estudio"><span>El estudio</span></a></li>
+          <li><a href="#estilos" data-photo="/images/flash-sheet.webp" data-crop="serpiente" data-caption="Blackwork · serpiente"><span>Tu estilo</span></a></li>
+          <li><a href="#flash" data-photo="/images/flash-sheet.webp" data-crop="hoja" data-caption="Hoja de flash"><span>Los flashes</span></a></li>
+          <li><a href="#dudas" data-photo="/models/studio-sillon.webp" data-caption="Antes de la sesión"><span>Preguntas</span></a></li>
+          <li><a href="#tu-idea" data-photo="/models/studio-maquina.webp" data-caption="Máquina de bobinas"><span>Tu idea</span></a></li>
+        </ul>
+        <div class="mt-nav__preview" aria-hidden="true">
+          <figure class="mt-nav__print">
+            <div class="mt-nav__image"><img src="/images/tattoo-craft.webp" alt="" loading="lazy" decoding="async" /></div>
+            <figcaption></figcaption>
+          </figure>
+        </div>
       </div>
-      <p>Buena tinta. Malas influencias.</p>
     </nav>
     <main id="contenido">
-      <section class="hero" id="inicio" aria-labelledby="hero-title">
-        <div class="hero-wall" aria-hidden="true"></div>
-        <div class="hero-redlight" aria-hidden="true"></div>
-        <div class="hero-poster">
-          <h1 id="hero-title">
-            <span>Tu madre</span><span>odiará esto.</span>
-          </h1>
-          <p class="paper-note hero-note">Tú vas a amarlo.</p>
+      <section class="press-hero" id="inicio" aria-labelledby="hero-title">
+        <div class="press-hero__scene" aria-hidden="true">
+          <img src="/images/studio-detail.webp" width="1400" height="933" fetchpriority="high" alt="" />
+          <div class="press-hero__haze"></div>
         </div>
-        <div class="hero-description">
-          <p>
-            Tatuajes con carácter.<br />
-            Para gente que no nació para quedarse en blanco.
-          </p>
-          <a class="button button-paper" href="#estudio"
-            ><span>Entra al estudio</span
-            ><span class="material-symbols-outlined" aria-hidden="true"
-              >door_open</span
-            ></a
-          >
-        </div>
-      </section>
-      <section
-        class="manifesto section-pad"
-        id="nosotros"
-        aria-labelledby="about-title"
-      >
-        <div class="manifesto-grid">
-          <div class="manifesto-label">
-            <span class="paper-note"
-              >Buena tinta.<br />
-              Malas influencias.</span
-            >
-          </div>
-          <div>
-            <h2 id="about-title" class="statement reveal">
-              Hay cosas que<br />
-              no se explican.<br />
-              Se tatúan.
-            </h2>
-            <div class="manifesto-body">
-              <p>
-                Una promesa. Un caos bonito. Algo que solo tú entiendes. No
-                necesitas una gran historia para hacerte un tatuaje. Pero sí un
-                lugar que te escuche.
-              </p>
-              <p>
-                Mala Tinta es ese lugar. Un concepto de estudio donde el arte
-                tiene carácter y tú tienes la última palabra.
-              </p>
-            </div>
-            <a class="underlined-link" href="#estudio"
-              >Pasa. Estás en tu casa.
-              <span class="material-symbols-outlined" aria-hidden="true"
-                >door_open</span
-              ></a
-            >
+        <div class="press-hero__content">
+          <h1 id="hero-title" class="press-h1"><span class="type-mask"><span class="type-print">Tu madre</span></span> <span class="type-mask"><span class="type-print">odiará <span class="hero-last-word">esto.</span></span></span></h1>
+          <p class="pasted-note press-hero__note">Tú vas a amarlo.</p>
+          <div class="press-hero__bottom">
+            <p>Tatuajes con carácter.<br />Para gente que no nació para quedarse en blanco.</p>
+            <a class="ink-cta press-hero__cta" href="#estudio"><span>Entra al estudio</span><span class="material-symbols-outlined" aria-hidden="true">door_open</span></a>
           </div>
         </div>
       </section>
-
-      <section
-        class="character-section"
-        id="sin-permiso"
-        aria-labelledby="character-title"
-      >
+      <section class="manifesto section-pad" id="nosotros" aria-labelledby="about-title">
+        <h2 id="about-title">Hay cosas que<br />no se explican.<br />Se tatúan.</h2>
+        <div class="manifesto-composition">
+          <p class="manifesto-story">Una <span class="editorial-tag">foto doblada.</span> Un garabato en una servilleta. Esa idea que todavía no sabes contar. No necesitas una gran historia. Necesitas <span class="editorial-tag editorial-tag--light">alguien que escuche.</span></p>
+          <p class="manifesto-signoff">Lo dibujamos contigo.<br />Hasta que digas: <strong>«ese soy yo».</strong></p>
+        </div>
+      </section>
+      <section class="character-section" id="sin-permiso" aria-labelledby="character-title">
         <div class="character-sticky">
           <div class="character-glow" aria-hidden="true"></div>
           <div class="character-heading">
-            <h2 id="character-title">Que hablen.</h2>
-            <p>
-              Tu próxima pieza no necesita<br />
-              la aprobación de nadie.
-            </p>
+            <h2 id="character-title">Que <br />hablen.</h2>
+            <p>El primer vistazo es suyo. <br />La decisión de llevarlo siempre es tuya.</p>
+            <p class="pasted-note character-aside">Sí, mamá. Es de verdad.</p>
           </div>
-          <div
-            class="character-stage"
-            role="img"
-            aria-label="Metalero tatuado sorprendido. Sus ojos miran hacia el cursor."
-          >
+          <div class="character-stage" role="img" aria-label="Metalero tatuado sorprendido. Sus ojos miran hacia el cursor.">
             <div class="character">
-              <img
-                class="hero-character"
-                src="/images/hero.webp"
-                width="1024"
-                height="1536"
-                alt=""
-                loading="lazy"
-              />
+              <img class="hero-character" src="/images/hero.webp" width="1024" height="1536" alt="" loading="lazy" decoding="async" />
               <div class="eye eye-left"><span class="iris"></span></div>
               <div class="eye eye-right"><span class="iris"></span></div>
             </div>
           </div>
-          <div class="character-note paper-note">Perdón, mamá.</div>
-          <a class="character-cta" href="#tu-idea"
-            >Yo sí me atrevo<span
-              class="material-symbols-outlined"
-              aria-hidden="true"
-              >bolt</span
-            ></a
-          >
+          <p class="pasted-note character-note">Esa cara no <br />se te borra.</p>
         </div>
       </section>
       <section
@@ -191,10 +134,9 @@
         <div class="studio-sticky">
           <div class="studio-heading">
             <h2 id="studio-title">
-              Aquí empieza<br />
-              lo permanente.
+              Pasa al taller.
             </h2>
-            <p>Acércate. Cada detalle tiene una razón.</p>
+            <p>Mira las paredes. Si un dibujo te detiene, ya tenemos de qué hablar.</p>
           </div>
           <div id="studio-canvas" class="studio-canvas">
             <img
@@ -208,11 +150,11 @@
           </div>
           <div class="studio-bottom">
             <div class="studio-chapters" aria-label="Escenas del estudio">
-              <button class="active" data-scene="0" aria-pressed="true">
-                El espacio</button
-              ><button data-scene="1" aria-pressed="false">La máquina</button
-              ><button data-scene="2" aria-pressed="false">El ritual</button
-              ><button data-scene="3" aria-pressed="false">Tu lugar</button>
+              <button class="active" data-scene="0" aria-pressed="true">Taller</button>
+              <button data-scene="1" aria-pressed="false">Máquina</button>
+              <button data-scene="2" aria-pressed="false">Preparación</button>
+              <button data-scene="3" aria-pressed="false">Sillón</button>
+              <button data-scene="4" aria-pressed="false">Tu pieza</button>
             </div>
             <a class="studio-skip" href="#estilos"
               >Seguir explorando<span

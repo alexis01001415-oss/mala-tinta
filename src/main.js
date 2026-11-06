@@ -1,4 +1,7 @@
 import "./dark.css";
+import { initNavigation } from "./navigation.js";
+import { startPressIntro } from "./press-intro.js";
+import "./edition.css";
 import { artRects } from "./flash-art.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -49,40 +52,7 @@ motionQuery.addEventListener("change", (event) => {
   if (savedMotion === null) setMotion(event.matches);
 });
 
-// Plain anchor navigation is always available; the mobile panel adds keyboard support.
-const menuButton = $(".menu-toggle");
-const menu = $("#mobile-menu");
-function closeMenu(restoreFocus = false) {
-  menu.classList.remove("open");
-  menu.inert = true;
-  menuButton.setAttribute("aria-expanded", "false");
-  menuButton.setAttribute("aria-label", "Abrir menú");
-  document.body.classList.remove("menu-open");
-  if (restoreFocus) menuButton.focus();
-}
-menuButton.addEventListener("click", () => {
-  const open = menuButton.getAttribute("aria-expanded") !== "true";
-  menu.classList.toggle("open", open);
-  menu.inert = !open;
-  menuButton.setAttribute("aria-expanded", String(open));
-  menuButton.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-  document.body.classList.toggle("menu-open", open);
-  if (open) menu.querySelector("a").focus();
-});
-menu
-  .querySelectorAll("a")
-  .forEach((link) => link.addEventListener("click", () => closeMenu()));
-document.addEventListener("keydown", (event) => {
-  if (
-    event.key === "Escape" &&
-    menuButton.getAttribute("aria-expanded") === "true"
-  )
-    closeMenu(true);
-});
-document.addEventListener("click", (event) => {
-  if (!menu.contains(event.target) && !menuButton.contains(event.target))
-    closeMenu();
-});
+const destroyNavigation = initNavigation({ getReducedMotion: () => reducedMotion });
 
 // The artwork supplies the eyelids; two irises travel inside those original eyes.
 const character = $(".character");
@@ -303,47 +273,24 @@ async function setupScrollMotion() {
         scrollTrigger: { trigger: el, start: "top 94%", once: true },
       }),
     );
-    gsap.to(".hero-poster", {
-      y: -45,
-      opacity: 0.3,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: 0.8,
-      },
+    gsap.to(".press-hero__scene", {
+      yPercent: 12, ease: "none",
+      scrollTrigger: { trigger: ".press-hero", start: "top top", end: "bottom top", scrub: true },
     });
-    gsap.to(".hero-redlight", {
-      yPercent: 20,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-      },
+    gsap.fromTo(".manifesto-story > .manifesto-word", { opacity: .58, y: 10 }, {
+      opacity: 1, y: 0, stagger: .1, ease: "none",
+      scrollTrigger: { trigger: ".manifesto-composition", start: "top 82%", end: "bottom 58%", scrub: .25 },
+    });
+    gsap.fromTo(".editorial-tag", { rotation: -6, scale: .95 }, {
+      rotation: 1, scale: 1, stagger: .2, ease: "none",
+      scrollTrigger: { trigger: ".manifesto-composition", start: "top 85%", end: "bottom 60%", scrub: .4 },
     });
     const characterTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".character-section",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.7,
-      },
+      scrollTrigger: { trigger: ".character-section", start: "top top", end: "bottom bottom", scrub: .45 },
     });
-    characterTimeline.fromTo(
-      ".character-stage",
-      { scale: 0.82, y: 80 },
-      { scale: 1.06, y: 0, ease: "none" },
-      0,
-    );
-    characterTimeline.fromTo(
-      ".character-note",
-      { rotation: 15, y: 50, opacity: 0.2 },
-      { rotation: 7, y: 0, opacity: 1, ease: "none" },
-      0,
-    );
+    characterTimeline.fromTo(".character-stage", { scale: .9, y: 50 }, { scale: 1.03, y: 0, ease: "none" }, 0);
+    characterTimeline.fromTo(".character-note", { rotation: 12, y: 35 }, { rotation: 6, y: -8, ease: "none" }, 0);
+    characterTimeline.fromTo(".character-aside", { rotation: -5, y: 12 }, { rotation: -2, y: -6, ease: "none" }, 0);
     gsap.to(".studio-progress span", {
       scaleX: 1,
       ease: "none",
@@ -386,6 +333,7 @@ const studioObserver = new IntersectionObserver(
     try {
       const { initStudio } = await import("./studio.js");
       studio = await initStudio($("#studio-canvas"), { reducedMotion });
+      studio?.setReducedMotion(reducedMotion);
     } catch {
       $("#studio-canvas").classList.add("is-fallback");
       $$(".studio-chapters button").forEach((button) => {
@@ -397,13 +345,11 @@ const studioObserver = new IntersectionObserver(
 );
 studioObserver.observe($("#estudio"));
 const studioCopy = [
-  ["Aquí empieza\nlo permanente.", "Acércate. Cada detalle tiene una razón."],
-  ["El pulso.\nLa precisión.", "Del primer trazo al último detalle."],
-  ["El ritual\nantes de la tinta.", "Preparar también es parte del arte."],
-  [
-    "Tu lugar.\nTu decisión.",
-    "Aquí no se trata de encajar. Se trata de ser tú.",
-  ],
+  ["Pasa al taller.", "Mira las paredes. Si un dibujo te detiene, ya tenemos de qué hablar."],
+  ["Aquí nace el trazo.", "Bobinas, aguja y mano. Acércate a la máquina que convierte una línea en piel."],
+  ["Antes de la tinta.", "Pide ver el material y pregunta cómo se prepara tu sesión. Mereces una respuesta clara."],
+  ["A tu ritmo.", "¿Nervios? Dilo. Una pausa o un minuto más también son parte de tu pieza."],
+  ["Que se sienta tuyo.", "De la pared al papel. Señala lo que te atrae y dale tu propia vuelta."],
 ];
 $("#studio-canvas").addEventListener("studiochapter", (event) => {
   const copy = studioCopy[event.detail.chapter];
@@ -422,6 +368,7 @@ const bookObserver = new IntersectionObserver(
         reducedMotion,
         onPageChange: updateFlash,
       });
+      sketchbook?.setReducedMotion(reducedMotion);
     } catch {
       $("#book-canvas").classList.add("book-is-fallback");
     }
@@ -489,47 +436,26 @@ $$("dialog").forEach((dialog) =>
   }),
 );
 $("#year").textContent = new Date().getFullYear();
-setMotion(reducedMotion);
-
-// The preloader tracks font readiness and exits even if an asset fails.
-const preloader = $("#preloader");
-const progress = $("#loader-progress");
-let loaderDone = false;
-function finishLoader() {
-  if (loaderDone) return;
-  loaderDone = true;
-  progress.style.transform = "scaleX(1)";
-  preloader.classList.add("done");
-  preloader.setAttribute("aria-hidden", "true");
-  preloader.inert = true;
-}
-$("#skip-loader").addEventListener("click", finishLoader);
-if (reducedMotion) finishLoader();
-else {
-  progress.style.transform = "scaleX(.15)";
-  Promise.allSettled([
-    document.fonts.load("600 40px Lora"),
-    document.fonts.load("400 16px Raleway"),
-    document.fonts.load("400 32px Marker"),
-  ]).then(finishLoader);
-  setTimeout(finishLoader, 1800);
-}
-// Keep the menu focus within its visible links, while allowing Escape to close.
-menu.addEventListener("keydown", (event) => {
-  if (event.key !== "Tab" || !menu.classList.contains("open")) return;
-  const links = [...menu.querySelectorAll("a")];
-  if (event.shiftKey && document.activeElement === links[0]) {
-    event.preventDefault();
-    menuButton.focus();
-  } else if (!event.shiftKey && document.activeElement === links.at(-1)) {
-    event.preventDefault();
-    menuButton.focus();
+// Preserve the semantic paragraph; only individual text nodes receive visual wrappers.
+const manifesto = $(".manifesto-story");
+const walker = document.createTreeWalker(manifesto, NodeFilter.SHOW_TEXT);
+const textNodes = [];
+while (walker.nextNode()) textNodes.push(walker.currentNode);
+for (const node of textNodes) {
+  const fragment = document.createDocumentFragment();
+  for (const token of node.textContent.split(/(\s+)/)) {
+    if (/^\s*$/.test(token)) fragment.append(document.createTextNode(token));
+    else { const word = document.createElement("span"); word.className = "manifesto-word"; word.textContent = token; fragment.append(word); }
   }
+  node.replaceWith(fragment);
+}
+const atmosphereObserver = new IntersectionObserver(([entry]) => {
+  $(".press-hero").classList.toggle("is-in-view", entry.isIntersecting);
 });
-menuButton.addEventListener("keydown", (event) => {
-  if (event.key === "Tab" && menu.classList.contains("open")) {
-    event.preventDefault();
-    const links = [...menu.querySelectorAll("a")];
-    (event.shiftKey ? links.at(-1) : links[0]).focus();
-  }
+atmosphereObserver.observe($(".press-hero"));
+setMotion(reducedMotion);
+const destroyIntro = startPressIntro({ getReducedMotion: () => reducedMotion });
+if (import.meta.hot) import.meta.hot.dispose(() => {
+  destroyNavigation?.(); destroyIntro?.(); scrollMotion?.revert();
+  studio?.destroy?.(); sketchbook?.destroy?.(); atmosphereObserver.disconnect();
 });
