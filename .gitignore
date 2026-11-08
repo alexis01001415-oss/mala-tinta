@@ -4,3 +4,5 @@ dist/
 *.log
 blender/*.blend1
 docs/qa/
+__pycache__/
+*.pyc

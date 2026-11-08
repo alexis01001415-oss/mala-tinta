@@ -56,11 +56,18 @@ def pbr_texture(material,asset,tint=(1,1,1),scale=1,normal_strength=.6):
         else:
             img.colorspace_settings.name='Non-Color';links.new(tex.outputs['Color'],p.inputs['Roughness'])
 
-pbr_texture(black,'brown_leather',(.045,.059,.068),.40,.72)
+pbr_texture(black,'brown_leather',(.027,.033,.038),.16,.20)
 pbr_texture(wall,'plastered_wall_05',(.099,.095,.091),1.7,.76)
 pbr_texture(oak,'weathered_brown_planks',(.33,.30,.25),1.6,.52)
 flashmat=mat('Original engraved flash illustrations',(.8,.74,.62),0,.93)
 tex=flashmat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(os.path.join(TEX,'flash-art.jpg'));flashmat.node_tree.links.new(tex.outputs['Color'],flashmat.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+photo_materials=[]
+for photo_name in ['blackwork','tradicional','fine-line','realismo']:
+    filename=os.path.join(ROOT,'public','images','editorial',photo_name+'.webp')
+    m=mat('Printed editorial tattoo photograph | '+photo_name,(.8,.8,.8),0,.65)
+    t=m.node_tree.nodes.new('ShaderNodeTexImage');t.image=bpy.data.images.load(filename)
+    m.node_tree.links.new(t.outputs['Color'],m.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+    photo_materials.append(m)
 
 def project_uv(obj,material):
     if not material or 'uv_scale' not in material:return
@@ -140,37 +147,14 @@ for x in [-2.3,2.25]:
     box('Outlet housing',(x,1.84,.43),(.12,.06,.17),darkmetal,.014)
     for z in [.4,.46]:box('Outlet slot',(x,1.802,z),(.044,.005,.008),black,.001)
 
-# Hydraulic tattoo chair, stitched four-part upholstery, adjustable arm rests.
-cx=.38;cy=-.22
-cyl('Wide circular chair base',(cx,cy,.16),.56,.13,darkmetal,vertices=64)
-cyl('Base chrome trim',(cx,cy,.23),.46,.035,chrome,vertices=64)
-cyl('Hydraulic pump',(cx,cy,.41),.16,.39,darkmetal)
-cyl('Hydraulic chrome piston',(cx,cy,.65),.085,.32,chrome)
-box('Seat metal underframe',(cx,cy,.82),(.86,.89,.13),darkmetal,.05)
-box('Seat cushion',(cx,cy-.02,.94),(.88,.89,.19),black,.09)
-for x in [cx-.36,cx+.36]:tube('Seat stitched seam',[(x,cy-.38,.995),(x,cy+.32,.995)],.004,seam)
-angle=-pi/9
-box('Reclining back support',(cx,cy+.52,1.35),(.74,.14,1.02),darkmetal,.05,rot=(angle,0,0))
-box('Back cushion',(cx,cy+.43,1.42),(.86,.22,1.1),black,.11,rot=(angle,0,0))
-box('Adjustable headrest',(cx,cy+.65,2.02),(.58,.23,.31),black,.09,rot=(angle,0,0))
-for x in [cx-.32,cx+.32]:
-    tube('Backrest stitched piping',[(x,cy+.19,1.05),(x,cy+.46,1.8)],.005,seam)
-for z in [1.2,1.5,1.75]:
-    for x in [cx-.2,cx+.2]:sphere('Upholstery button',(x,cy+.19+(z-1.05)*.36,z),(.016,.009,.016),seam)
-box('Angled leg support',(cx,cy-.74,.7),(.76,.75,.13),darkmetal,.045,rot=(pi/8,0,0))
-box('Leg cushion',(cx,cy-.73,.8),(.82,.74,.17),black,.075,rot=(pi/8,0,0))
-box('Foot cushion',(cx,cy-1.12,.55),(.78,.29,.14),black,.05,rot=(pi/8,0,0))
-for x in [cx-.55,cx+.55]:
-    rod('Armrest chrome support',(x,cy+.14,.79),(x,cy+.14,1.22),.027,chrome)
-    cyl('Armrest locking knob',(x,cy+.05,1.02),.05,.055,darkmetal,rot=(pi/2,0,0))
-    box('Armrest padded leather',(x,cy-.07,1.27),(.22,.72,.14),black,.06)
-    for y in [cy-.3,cy+.16]:box('Armrest stitching',(x, y,1.34),(.14,.007,.004),seam,.002)
-rod('Foot pedal',(cx-.25,cy-.08,.3),(cx-.45,cy-.57,.2),.024,metal)
-box('Hydraulic foot pedal grip',(cx-.46,cy-.6,.2),(.25,.16,.04),rubber,.012)
-
-# Workstation built from the new bottle, machine, needle and trolley references.
+# Modular equipment helpers shared by the furniture and tattoo instruments.
 equipment = os.path.join(ROOT, 'blender', 'equipment.py')
 exec(compile(open(equipment, encoding='utf-8').read(), equipment, 'exec'))
+furniture = os.path.join(ROOT, 'blender', 'furniture.py')
+exec(compile(open(furniture, encoding='utf-8').read(), furniture, 'exec'))
+cx=.38;cy=-.22
+build_chair(cx,cy)
+
 tx,ty=-1.53,.42
 tool_cart(tx,ty)
 liner(tx-.09,ty-.059,1.242)
@@ -210,18 +194,8 @@ box('Stencil paper stack',(2.06,1.46,1.14),(.34,.4,.04),paper,.004)
 box('Sharps container',(2.08,1.69,1.31),(.25,.19,.35),red,.025)
 box('Sharps container lid',(2.08,1.69,1.5),(.26,.2,.04),black,.01)
 
-# Articulated task lamp and conical enamel shade.
-lx=1.45;ly=.3
-cyl('Lamp heavy floor foot',(lx,ly,.1),.25,.08,darkmetal,vertices=40)
-rod('Lamp vertical post',(lx,ly,.14),(lx,ly,1.37),.022,chrome)
-for a,b in [((lx,ly,1.3),(1.15,.28,1.95)),((1.15,.28,1.95),(.65,.1,2.34))]:
-    rod('Lamp articulated arm',a,b,.023,darkmetal)
-    sphere('Lamp pivot',a,(.055,.055,.055),metal)
-    # pair of tension spring rods
-    rod('Lamp tension spring',(a[0]+.045,a[1],a[2]+.08),(b[0]+.045,b[1],b[2]-.08),.009,chrome)
-rod('Lamp neck',(.65,.1,2.34),(.58,.02,2.25),.025,chrome)
-bpy.ops.mesh.primitive_cone_add(vertices=48,radius1=.24,radius2=.07,depth=.21,location=(.58,.02,2.16));apply(bpy.context.object,offwhite,'Ivory enamel task lamp')
-cyl('Lamp glowing diffuser',(.58,.02,2.052),.22,.008,warm,vertices=48)
+# Connected articulated task lamp, with double arms and a hollow reflector.
+build_lamp()
 
 # Flash sheets in layered mismatched frames. Curves are actual mesh in GLB.
 def flash_frame(x,z,w,h,variant=0):
@@ -233,9 +207,10 @@ def flash_frame(x,z,w,h,variant=0):
     fw=w-.15;fh=h-.16
     mesh=bpy.data.meshes.new('Printed flash paper')
     mesh.from_pydata([(x-fw/2,yy,z-fh/2),(x+fw/2,yy,z-fh/2),(x+fw/2,yy,z+fh/2),(x-fw/2,yy,z+fh/2)],[],[(0,1,2,3)])
-    o=bpy.data.objects.new('Original finely engraved flash art',mesh);bpy.context.collection.objects.link(o);apply(o,flashmat,o.name)
+    o=bpy.data.objects.new('Printed tattoo portrait | '+str(variant),mesh);bpy.context.collection.objects.link(o);apply(o,photo_materials[variant%4],o.name)
     uv=mesh.uv_layers.new(name='UVMap')
-    regions=[(.01,.51,.43,.99),(.48,.04,.99,.49),(.46,.53,.99,.94),(.08,.015,.42,.48)]
+    aspect=fw/fh; crop=min(1,.8/aspect); crop_x=min(1,aspect/.8)
+    regions=[((1-crop_x)/2,(1-crop)/2,(1+crop_x)/2,(1+crop)/2)]*4
     a,b,c,d=regions[variant%4]
     for i,p in enumerate([(a,b),(c,b),(c,d),(a,d)]):uv.data[i].uv=p
     for xx in [x-w/2+.026,x+w/2-.026]:
@@ -255,7 +230,8 @@ text_obj('Studio wall mark','MALA TINTA',(.15,1.9,.67),.14,offwhite,extrude=.001
 # catch real light at the edges and turn the final camera stop into a design desk.
 box('Flash archive | black wooden picture rail',(-2.445,-.08,1.98),(.04,2.34,.08),enamel,.005)
 for n,(yy,zz,w,h,index,tilt) in enumerate([(-.86,1.77,.39,.48,2,-.035),(-.33,1.66,.48,.66,0,.026),(.24,1.72,.48,.57,3,-.018),(.79,1.66,.46,.63,1,.045)]):
-    regions=[(.01,.51,.43,.99),(.48,.04,.99,.49),(.46,.53,.99,.94),(.08,.015,.42,.48)]
+    aspect=w/h; crop=min(1,.8/aspect); crop_x=min(1,aspect/.8)
+    regions=[((1-crop_x)/2,(1-crop)/2,(1+crop_x)/2,(1+crop)/2)]*4
     left,bottom,right,top=regions[index]
     verts=[];faces=[];coords=[]
     for j in range(5):
@@ -267,7 +243,7 @@ for n,(yy,zz,w,h,index,tilt) in enumerate([(-.86,1.77,.39,.48,2,-.035),(-.33,1.6
     for j in range(4):
         for i in range(4):
             k=j*5+i;faces.append((k,k+1,k+6,k+5))
-    sheet=mesh_object('Archivo | lámina '+str(n+1),verts,faces,flashmat)
+    sheet=mesh_object('Archivo | fotografía '+str(n+1),verts,faces,photo_materials[index])
     uv=sheet.data.uv_layers.new(name='UVMap')
     for poly in sheet.data.polygons:
         for li in poly.loop_indices:uv.data[li].uv=coords[sheet.data.loops[li].vertex_index]
@@ -279,60 +255,12 @@ for j in range(5):
     o.rotation_euler.z=(j-2)*.045
 for i in range(4):
     rod('Archivo | lápices de grafito',(-2.23,-.73+i*.013,1.004),(-2.02,-.64+i*.013,1.004),.004,enamel if i%2 else bronze)
-text_obj('Archivo de flashes','ARCHIVO DE FLASH',(-2.42,-.06,2.11),.104,offwhite,rotation=(pi/2,0,pi/2),extrude=.0003)
+text_obj('Archivo de flashes','IDEAS EN PAPEL',(-2.42,-.06,2.11),.104,offwhite,rotation=(pi/2,0,pi/2),extrude=.0003)
 
 # Bench footswitch and coiled power cord.
 box('Tattoo footswitch',(-.21,-1.42,.1),(.31,.29,.08),darkmetal,.03)
 for i in range(5):box('Footswitch traction',(-.21,-1.51+i*.039,.144),(.22,.01,.005),rubber,.001)
 tube('Footswitch cable',[(-.21,-1.3,.09),(-.52,-1.15,.075),(-.9,-.7,.075),(-1.32,-.49,.075),(-1.57,-.13,.075)],.009,rubber)
-
-# Closely stitched upholstery with actual piping along cushion edges.
-def rounded_loop(w,h,r,steps=12):
-    points=[]
-    for xx,zz,start in [(w/2-r,h/2-r,0),(-w/2+r,h/2-r,pi/2),(-w/2+r,-h/2+r,pi),(w/2-r,-h/2+r,pi*1.5)]:
-        for i in range(steps):
-            a=start+i*pi/2/(steps-1)
-            points.append((xx+r*cos(a),zz+r*sin(a)))
-    return points
-
-def upholstery_edges(center,w,h,angle,plane='back'):
-    transform=Matrix.Rotation(angle,4,'X')
-    def point(x,z,depth=-.116):
-        p=Vector((x,depth,z)) if plane=='back' else Vector((x,z,.102))
-        return Vector(center)+transform@p
-    for inset,thick in [(0,.0024),(.012,.0012)]:
-        path=rounded_loop(w-inset,h-inset,.075)
-        tube('Leather cushion edge piping',[point(x,z) for x,z in path],thick,seam,True)
-    path=rounded_loop(w-.027,h-.027,.07,24)
-    for i in range(0,len(path)-1,2):
-        a,b=path[i],path[i+1]
-        tube('Hand stitched upholstery thread',[point(*a,-.118),point(*b,-.118)],.0009,offwhite)
-
-upholstery_edges((cx,cy+.43,1.42),.74,.97,angle)
-upholstery_edges((cx,cy-.02,.94),.76,.77,0,'seat')
-for x in [cx-.55,cx+.55]:
-    for i in range(28):
-        y=cy-.34+i*.019
-        tube('Armrest edge stitch',[(x-.082,y,1.331),(x-.082,y+.009,1.331)],.0008,seam)
-# Bracket fasteners, bearing washers and hydraulic mechanism detail.
-for x in [cx-.48,cx+.48]:
-    cyl('Chair recline hinge',(x,cy+.32,.91),.068,.035,metal,rot=(0,pi/2,0),vertices=40)
-    cyl('Chair hinge bolt',(x+(.021 if x>cx else -.021),cy+.32,.91),.021,.012,darkmetal,rot=(0,pi/2,0),vertices=6)
-rod('Recline piston',(cx+.35,cy-.2,.66),(cx+.35,cy+.57,1.18),.022,metal)
-rod('Recline actuator',(cx+.35,cy+.31,1.0),(cx+.35,cy+.63,1.22),.012,chrome)
-for z in [.33,.38,.43,.48]:cyl('Hydraulic sleeve ring',(cx,cy,z),.165,.007,metal,vertices=48)
-
-# Lamp springs, joints and reflector hardware.
-for a,b in [((1.45,.255,1.43),(1.18,.255,1.9)),((1.12,.235,1.99),(.7,.1,2.3))]:
-    va,vb=Vector(a),Vector(b);direction=(vb-va).normalized();basis=direction.cross(Vector((0,1,0))).normalized();side=direction.cross(basis)
-    spring=[]
-    for i in range(161):
-        t=i/160;theta=t*2*pi*20
-        spring.append(va.lerp(vb,t)+(basis*cos(theta)+side*sin(theta))*.012)
-    tube('Articulated lamp tension spring',spring,.0022,chrome)
-for x,y,z in [(1.45,.3,1.37),(1.15,.28,1.95),(.65,.1,2.34)]:
-    cyl('Lamp hinge screw',(x,y-.06,z),.018,.012,chrome,rot=(pi/2,0,0),vertices=6)
-tube('Enamel lamp rim',[(.58+.242*cos(a*2*pi/64),.02+.242*sin(a*2*pi/64),2.06) for a in range(64)],.006,chrome,True)
 
 # Stage a separate preparation station with a pressed metal instrument dish,
 # windowed stainless tips, real hemostat loops and crimped paper sleeves.
@@ -345,6 +273,7 @@ for i in range(3):
     box('Cartucho | sobre sellado',(x,y,1.131+i*.001),(.26,.065,.006),offwhite,.004)
     box('Cartucho | sello de papel',(x-.105,y,1.135+i*.001),(.021,.058,.001),blue,.001)
     text_obj('Cartucho | código impreso','07 RL  /  MT',(x,y,1.136+i*.001),.013,enamel,rotation=(0,0,0),extrude=0)
+cartridge_study(1.75,1.36,1.143)
 for i in range(8):
     cyl('Preparación | discos de algodón',(1.27,1.58,1.129+i*.0033),.036,.0033,offwhite,vertices=20)
 for i in range(2):
@@ -395,7 +324,7 @@ area('Luz del archivo',(-1.55,-.32,2.32),31,(1,.77,.54),.95,(-2.40,-.15,1.66))
 scene.world.node_tree.nodes['Background'].inputs[1].default_value=.16
 bpy.ops.object.camera_add(location=(2.55,-3.9,1.76))
 cam=bpy.context.object;cam.name='Recorrido del taller';scene.camera=cam
-scene.render.engine='CYCLES';scene.cycles.samples=32;scene.cycles.use_denoising=True
+scene.render.engine='CYCLES';scene.cycles.samples=48;scene.cycles.use_denoising=True
 try:
     prefs=bpy.context.preferences.addons['cycles'].preferences
     prefs.compute_device_type='OPTIX';prefs.refresh_devices()
@@ -433,15 +362,12 @@ bpy.ops.file.pack_all()
 bpy.context.preferences.filepaths.save_version=0
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(ROOT,'blender','studio.blend'))
 # Create a compact web asset: apply bevels then consolidate by material.
-for o in list(bpy.context.scene.objects):
-    if o.type in {'CURVE','FONT'}:
-        bpy.context.view_layer.objects.active=o;o.select_set(True)
-        bpy.ops.object.convert(target='MESH');o.select_set(False)
-    elif o.type=='MESH':
-        bpy.context.view_layer.objects.active=o
-        for modifier in list(o.modifiers):
-            try:bpy.ops.object.modifier_apply(modifier=modifier.name)
-            except:pass
+bpy.ops.object.select_all(action='DESELECT')
+convertible=[o for o in scene.objects if o.type in {'MESH','CURVE','FONT'}]
+for o in convertible:o.select_set(True)
+if convertible:
+    bpy.context.view_layer.objects.active=convertible[0]
+    bpy.ops.object.convert(target='MESH')
 
 groups={}
 for o in list(bpy.context.scene.objects):

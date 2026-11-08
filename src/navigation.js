@@ -2,6 +2,15 @@ import { gsap } from "gsap";
 import "./navigation.css";
 
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+const imageBase = `${import.meta.env.BASE_URL}images/editorial/`;
+const menuPrints = {
+  "#nosotros": { file: "owner", caption: "Detrás de la tinta", mounting: "top", rotation: -4 },
+  "#estudio": { file: "preparation", caption: "Todo tiene su lugar", mounting: "sides", rotation: 4 },
+  "#estilos": { file: "blackwork", caption: "Encuentra tu lenguaje", mounting: "corners", rotation: -3 },
+  "#flash": { file: "fine-line", caption: "Ideas en papel", mounting: "double", rotation: 3 },
+  "#dudas": { file: "care", caption: "Pregunta sin pena", mounting: "top", rotation: -5 },
+  "#tu-idea": { file: "consultation", caption: "Ponlo sobre la mesa", mounting: "sides", rotation: 2 },
+};
 
 export function initNavigation({ getReducedMotion = () => motionPreference.matches } = {}) {
   const header = document.querySelector("[data-site-header]");
@@ -12,6 +21,14 @@ export function initNavigation({ getReducedMotion = () => motionPreference.match
   const controller = new AbortController();
   const { signal } = controller;
   const links = Array.from(menu.querySelectorAll(".mt-nav__links a"));
+  links.forEach((link) => {
+    const art = menuPrints[link.hash];
+    if (!art) return;
+    link.dataset.photo = `${imageBase}${art.file}.webp`;
+    link.dataset.caption = art.caption;
+    link.dataset.crop = "";
+    link.dataset.mounting = art.mounting;
+  });
   const focusOrder = [...header.querySelectorAll("a, button"), ...links];
   const background = document.querySelectorAll("main, footer, .skip-link");
   const preview = menu.querySelector(".mt-nav__preview");
@@ -63,8 +80,9 @@ export function initNavigation({ getReducedMotion = () => motionPreference.match
     print.style.visibility = "visible";
     photo.src = image.src;
     photo.dataset.crop = link.dataset.crop || "";
+    print.dataset.mounting = link.dataset.mounting || "top";
     caption.textContent = link.dataset.caption;
-    const rotation = links.indexOf(link) % 2 ? 4 : -4;
+    const rotation = menuPrints[link.hash]?.rotation ?? (links.indexOf(link) % 2 ? 4 : -4);
     gsap.killTweensOf(print);
     if (getReducedMotion()) {
       gsap.set(print, { x: 0, y: 0, rotation });

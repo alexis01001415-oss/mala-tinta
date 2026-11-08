@@ -175,6 +175,49 @@ def steel_tip(name, x,y,z, scale=1, angle=0):
     for poly in obj.data.polygons:poly.use_smooth=True
     return obj
 
+def needle_bundle(name, count, diameter, location, kind='RL', length=.033):
+    """Visible needle group, actual diameter in metres. Long-taper geometry.
+    RL has concentric packing; RM has two staggered rows and a curved envelope."""
+    x,y,z=location
+    if kind=='RL':
+        offsets=[(0,0)]
+        if count>1:
+            offsets += [(diameter*cos(i*2*pi/(count-1)),diameter*sin(i*2*pi/(count-1))) for i in range(count-1)]
+    else:
+        row_count=(count+1)//2
+        offsets=[((i-(row_count-1)/2)*diameter,0) for i in range(row_count)]
+        offsets += [((i-(row_count-2)/2)*diameter,diameter*.87) for i in range(count-row_count)]
+    for i,(dx,dy) in enumerate(offsets):
+        tip_z=z+.0007*(abs(dx)/(diameter*4))**2 if kind=='RM' else z
+        # Closed four-ring needle with a long narrow point. No dangerous exposed
+        # workspace implied: these groups sit inside display cartridge housings.
+        turned(name+' | needle '+str(i+1),(x+dx,y+dy,tip_z),[(0,.000015),(.004,diameter/2),(length,diameter/2),(length+.0001,0)],chrome,10)
+
+def cartridge(name,centre,count,diameter,kind,rotation=(pi/2,0,0)):
+    before=set(bpy.context.scene.objects)
+    plastic=next((m for m in bpy.data.materials if m.name=='Cartridge blue polymer'),None) or mat('Cartridge blue polymer',(.067,.19,.24),.05,.28)
+    # Tapered nozzle is open at its end; ribbed bayonet fits the pen grip.
+    turned(name+' | translucent housing',(0,0,0),[(0,.002),(.005,.003),(.012,.006),(.027,.006),(.03,.009),(.037,.009),(.039,.007)],nozzle,40)
+    turned(name+' | cartridge collar',(0,0,0),[(.026,.007),(.028,.0095),(.032,.0095),(.034,.008),(.04,.008)],plastic,40)
+    for angle in (0,pi):
+        box(name+' | bayonet lug',(.009*cos(angle),.009*sin(angle),.032),(.004,.004,.006),plastic,.001)
+    cyl(name+' | needle window',(0,-.0052,.018),.004,.002,rubber,rot=(pi/2,0,0),vertices=24)
+    needle_bundle(name,count,diameter,(0,-.0058,.0015),kind,length=.022)
+    rod(name+' | plunger',(0,0,.035),(0,0,.057),.0022,metal)
+    transform=Matrix.Translation(Vector(centre)) @ Matrix.Rotation(rotation[2],4,'Z') @ Matrix.Rotation(rotation[1],4,'Y') @ Matrix.Rotation(rotation[0],4,'X')
+    bpy.context.view_layer.update()
+    for obj in set(bpy.context.scene.objects)-before:obj.matrix_world=transform@obj.matrix_world
+
+def cartridge_study(x,y,z):
+    for i,(code,count,diameter,kind) in enumerate([('1003 RL',3,.00030,'RL'),('1207 RL',7,.00035,'RL'),('1213 RM',13,.00035,'RM')]):
+        xx=x+i*.088
+        box('Needle study | sealed blister backing',(xx,y,z),(.073,.135,.003),offwhite,.005)
+        box('Needle study | paper crimp',(xx,y+.052,z+.002),(.067,.018,.001),paper,.001)
+        for dx in [-.031,.031]:
+            for j in range(14):box('Needle study | blister edge seal',(xx+dx,y-.055+j*.008,z+.002),(.003,.003,.0006),paper,.0005)
+        cartridge('Cartridge '+code,(xx,y-.032,z+.013),count,diameter,kind,rotation=(-pi/2,0,0))
+        text_obj('Needle study | configuration',code,(xx,y+.042,z+.003),.0085,darkmetal,rotation=(0,0,0),extrude=0)
+
 def liner(x,y,z):
     created=set(bpy.context.scene.objects)
     cut_frame()
@@ -220,7 +263,22 @@ def liner(x,y,z):
         mesh_object('Liner | faceted diamond knurl',v,f,metal)
     cyl('Liner | guide tube',(gx,gy,-.012),.005,.033,metal,vertices=28)
     steel_tip('Liner | open steel tip',gx,gy,-.143,.69)
-    rod('Liner | needle grouping',(gx,gy,-.146),(gx,gy,-.105),.0007,metal)
+    needle_bundle('Liner | 1207RL group',7,.00035,(gx,gy,-.145),length=.038)
+    rod('Liner | needle bar',(gx,gy,-.104),(gx,gy,.066),.0011,chrome)
+    tube('Liner | needle drive eye',[(gx+.004*cos(i*pi/16),gy,.067+.004*sin(i*pi/16)) for i in range(32)],.0011,metal,True)
+    tube('Liner | dampening O ring',[(.030+.014*cos(i*pi/24),-.012,.079+.008*sin(i*pi/24)) for i in range(48)],.0013,rubber,True)
+    # Helical contact-screw thread and insulating washers are resolved geometry.
+    a=Vector((-.039,-.012,.103));b=Vector((.025,-.012,.085));d=(b-a).normalized()
+    side=d.cross(Vector((0,1,0))).normalized();up=d.cross(side)
+    pts=[]
+    for i in range(193):
+        t=i/192;theta=t*pi*2*16
+        pts.append(a.lerp(b,t)+(side*cos(theta)+up*sin(theta))*.0031)
+    tube('Liner | threaded copper contact',pts,.00035,bronze)
+    for xx in (-.053,.045):
+        cyl('Liner | insulating shoulder washer',(xx,-.012,.087 if xx<0 else .02),.0075,.002,rubber,vertices=32)
+    for xx in (-.026,.009):
+        cyl('Liner | coil fixing bolt',(xx,-.011,.007),.004,.008,metal,vertices=6)
     # The instrument rests crosswise on the curved silicone cradle, tip toward
     # the front left, exposing the casting, coils and grip in the same view.
     rotation = Matrix.Rotation(math.radians(53),4,'Y') @ Matrix.Rotation(math.radians(-13),4,'X')
@@ -236,3 +294,4 @@ def liner(x,y,z):
         a=i*3.5*pi/120
         pts.append((x+.175+.09*cos(a),y-.045+.055*sin(a),1.134+i*.000018))
     tube('Liner | removable cable',pts,.0032,pet)
+    tube('Liner | rear binder connection',[(x+.10,y+.035,1.14),(x+.19,y+.045,1.14),(x+.26,y+.035,1.134)],.0032,pet)

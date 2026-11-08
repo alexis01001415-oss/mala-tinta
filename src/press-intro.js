@@ -6,7 +6,6 @@ export function startPressIntro({ getReducedMotion }) {
   const skip = document.getElementById('skip-loader');
   const content = [...document.querySelectorAll('main, header, nav, footer, .skip-link')];
   const previous = content.map(el => el.inert);
-  const heroWords = document.querySelectorAll('.type-print');
   const controller = new AbortController();
   let closed = false, timeline, heroTimeline;
   function release(animate = true) {
@@ -17,7 +16,6 @@ export function startPressIntro({ getReducedMotion }) {
     intro.hidden = true;
     intro.inert = true;
     content.forEach((el, i) => { el.inert = previous[i]; });
-    try { sessionStorage.setItem('mala-tinta-press-seen', '1'); } catch { /* Optional. */ }
     if (intro.contains(document.activeElement)) {
       const heading = document.getElementById('hero-title');
       heading.tabIndex = -1;
@@ -25,11 +23,11 @@ export function startPressIntro({ getReducedMotion }) {
     }
     if (animate && !getReducedMotion() && scrollY < 100) {
       heroTimeline = gsap.timeline();
-      heroTimeline.fromTo(heroWords, { yPercent: 115, rotation: 3, scaleX: 1.07 }, {
-        yPercent: 0, rotation: 0, scaleX: 1, duration: .34, stagger: .105, ease: 'power4.out', clearProps: 'transform',
-      }).fromTo('.press-hero__note', { rotation: -12, scale: 1.2, opacity: 0 }, {
-        rotation: -5, scale: 1, opacity: 1, duration: .18, ease: 'power3.out', clearProps: 'transform,opacity',
-      }, .28);
+      heroTimeline.fromTo('.type-print', { yPercent: 110, rotation: 2 }, {
+        yPercent: 0, rotation: 0, duration: .5, stagger: .1, ease: 'power4.out', clearProps:'transform',
+      }).fromTo('.press-hero__note,.press-hero__aside', { scale: 1.15, opacity: 0 }, {
+        scale: 1, opacity: 1, duration: .3, stagger: .12, ease: 'back.out(1.5)', clearProps:'transform,opacity',
+      }, .38);
     }
   }
   window.addEventListener('mt:release-intro', () => release(), { signal: controller.signal });
@@ -44,15 +42,15 @@ export function startPressIntro({ getReducedMotion }) {
   }
   intro.hidden = false;
   content.forEach(el => { el.inert = true; });
-  // This is a brief brand ident, not a simulated load meter. The boot gate wins on failure.
+  const strokes = [...intro.querySelectorAll('[data-logo-stroke]')];
+  strokes.forEach(path => {
+    const length = path.getTotalLength();
+    gsap.set(path, { strokeDasharray:length, strokeDashoffset:length });
+  });
   timeline = gsap.timeline({ onComplete: () => release() });
-  timeline.fromTo('.press-intro__word', { yPercent: 115, skewX: -9 }, {
-    yPercent: 0, skewX: 0, duration: .3, stagger: .1, ease: 'power4.out',
-  }).to('.press-intro__title', { scale: 1.08, rotation: 2, duration: .2, ease: 'steps(2)' }, .45)
-    .to('.press-intro__shutter', { x: '105%', skewX: 0, duration: .25, ease: 'power3.inOut' }, .6)
-    .to(intro, { clipPath: 'polygon(0 0,100% 0,100% 0,0 0)', duration: .3, ease: 'power4.in' }, .85);
-  if (innerWidth < 700) timeline.timeScale(1.3);
-  return () => {
-    controller.abort(); timeline?.kill(); heroTimeline?.kill(); release(false);
-  };
+  timeline.to(strokes, { strokeDashoffset:0, duration:.5, stagger:.18, ease:'power2.inOut' })
+    .fromTo('.press-intro__logo', { scale:.88, rotation:-7 }, { scale:1, rotation:-3, duration:.85, ease:'power3.out' },0)
+    .to('.press-intro__logo', { scale:1.07, y:-12, opacity:0, duration:.3, ease:'power2.in' },1.4)
+    .to('#intro-wipe', { attr:{d:'M0 0H100V0Q50 -25 0 0Z'}, duration:.65, ease:'power3.inOut' },1.48);
+  return () => { controller.abort(); timeline?.kill(); heroTimeline?.kill(); release(false); };
 }

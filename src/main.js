@@ -2,7 +2,10 @@ import "./dark.css";
 import { initNavigation } from "./navigation.js";
 import { startPressIntro } from "./press-intro.js";
 import "./edition.css";
-import { artRects } from "./flash-art.js";
+import { initEditorialSections } from "./editorial-sections.js";
+import "./wall-edition.css";
+// Reserve the full book stage before ScrollTrigger measures later scenes.
+import "./sketchbook.css";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -18,7 +21,7 @@ let reducedMotion =
 let studio;
 let sketchbook;
 let scrollMotion;
-let activeFlash = 0;
+let editorialCleanup;
 let brief = "";
 let toastTimeout;
 const motionButton = $("#motion-toggle");
@@ -39,7 +42,10 @@ function setMotion(value, save = false) {
   sketchbook?.setReducedMotion(value);
   scrollMotion?.revert();
   scrollMotion = null;
+  editorialCleanup?.();
+  editorialCleanup = null;
   if (value) {
+    editorialCleanup = initEditorialSections({ reducedMotion:true, onChooseStyle:goToIdea });
     $$(".iris").forEach((el) => {
       el.style.transform = "";
     });
@@ -93,93 +99,6 @@ document.documentElement.addEventListener("pointerleave", () => {
   });
 });
 
-const styles = {
-  blackwork: {
-    name: "Blackwork",
-    title: "El negro\nno pide permiso.",
-    description:
-      "Contraste brutal, sombras profundas y trazos que tienen algo que decir. Para quienes llevan el carácter a flor de piel.",
-    tags: "NEGRO SÓLIDO / CONTRASTE / PRESENCIA",
-    crop: 0,
-    alt: "Estudio conceptual de una serpiente en tinta negra",
-  },
-  tradicional: {
-    name: "Tradicional",
-    title: "Lo clásico\nno se domestica.",
-    description:
-      "Líneas contundentes y símbolos que sobreviven a las modas. Una dirección para quienes quieren una pieza con toda la actitud.",
-    tags: "LÍNEA FIRME / SÍMBOLOS / ACTITUD",
-    crop: 2,
-    alt: "Diseño conceptual de una daga ornamental en tinta negra",
-  },
-  "fine-line": {
-    name: "Fine line",
-    title: "No hace falta\ngritar.",
-    description:
-      "Detalles sutiles, aire y una intención clara. Una pieza delicada también puede decir muchísimo sobre ti.",
-    tags: "DELICADEZA / DETALLE / AIRE",
-    crop: 3,
-    alt: "Boceto conceptual botánico de una rosa",
-  },
-  personalizado: {
-    name: "Personalizado",
-    title: "Eso que solo\ntú entiendes.",
-    description:
-      "Mezcla referencias, cuenta tu historia o empieza desde cero. El punto de partida puede ser cualquier cosa. El resultado debe sentirse tuyo.",
-    tags: "TU HISTORIA / TU IDEA / TU PIEL",
-    crop: 1,
-    alt: "Diseño conceptual de polilla con detalles ornamentales",
-  },
-};
-let activeStyle = "blackwork";
-function cropImage(img, index) {
-  const [x, y, w, h] = artRects[index];
-  img.style.width = `min(${(100 * 1024) / w}cqw, ${(100 * 1024) / h}cqh)`;
-  img.style.height = "auto";
-  img.style.left = img.style.top = "50%";
-  img.style.transform = `translate(${(-100 * (x + w / 2)) / 1024}%, ${(-100 * (y + h / 2)) / 1536}%)`;
-  img.style.clipPath = `inset(${(100 * y) / 1536}% ${(100 * (1024 - x - w)) / 1024}% ${(100 * (1536 - y - h)) / 1536}% ${(100 * x) / 1024}%)`;
-}
-cropImage($("#style-image"), 0);
-function selectStyle(key, focus = false) {
-  activeStyle = key;
-  const data = styles[key];
-  const tabs = $$("[role=tab]");
-  tabs.forEach((tab) => {
-    const active = tab.dataset.style === key;
-    tab.setAttribute("aria-selected", String(active));
-    tab.tabIndex = active ? 0 : -1;
-    if (active && focus) {
-      tab.focus();
-      tab.scrollIntoView({
-        block: "nearest",
-        inline: "nearest",
-        behavior: reducedMotion ? "instant" : "smooth",
-      });
-    }
-  });
-  $("#style-panel").setAttribute("aria-labelledby", `tab-${key}`);
-  $("#style-title").textContent = data.title;
-  $("#style-description").textContent = data.description;
-  $("#style-tags").textContent = data.tags;
-  $("#style-number").textContent = `0${Object.keys(styles).indexOf(key) + 1}`;
-  $("#style-image").alt = data.alt;
-  cropImage($("#style-image"), data.crop);
-}
-$$("[role=tab]").forEach((tab, index, tabs) => {
-  tab.addEventListener("click", () => selectStyle(tab.dataset.style));
-  tab.addEventListener("keydown", (event) => {
-    let next = index;
-    if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
-    else if (event.key === "ArrowLeft")
-      next = (index - 1 + tabs.length) % tabs.length;
-    else if (event.key === "Home") next = 0;
-    else if (event.key === "End") next = tabs.length - 1;
-    else return;
-    event.preventDefault();
-    selectStyle(tabs[next].dataset.style, true);
-  });
-});
 function toast(text) {
   const el = $("#toast");
   el.textContent = text;
@@ -198,64 +117,17 @@ function goToIdea(style, story) {
   });
   toast(`${style}: añadido a tu idea.`);
 }
-$("#style-select").addEventListener("click", () =>
-  goToIdea(styles[activeStyle].name),
-);
-
-const flashes = [
-  {
-    title: "Muda de piel.",
-    subtitle: "SERPIENTE / BLACKWORK",
-    alt: "Boceto de serpiente enrollada",
-    style: "Blackwork",
-  },
-  {
-    title: "Busca tu luz.",
-    subtitle: "POLILLA / BLACKWORK",
-    alt: "Polilla ornamental con calavera",
-    style: "Blackwork",
-  },
-  {
-    title: "Con filo propio.",
-    subtitle: "DAGA / TRADICIONAL",
-    alt: "Daga con filigrana y cinta",
-    style: "Tradicional",
-  },
-  {
-    title: "También floreces.",
-    subtitle: "BOTÁNICA / FINE LINE",
-    alt: "Rosa de trazo botánico",
-    style: "Fine line",
-  },
-];
-function updateFlash(index) {
-  activeFlash = index;
-  const data = flashes[index];
-  $("#flash-counter").textContent = `0${index + 1} / 04`;
-  $("#flash-name").textContent = data.title;
-  $("#flash-subtitle").textContent = data.subtitle;
-  $("#flash-prev").disabled = index === 0;
-  $("#flash-next").disabled = index === flashes.length - 1;
-}
-function showFlash(index) {
-  const next = Math.min(Math.max(index, 0), flashes.length - 1);
-  if (sketchbook) sketchbook.setPage(next);
-  else updateFlash(next);
-}
-$("#flash-prev").disabled = true;
-$("#flash-prev").addEventListener("click", () => showFlash(activeFlash - 1));
-$("#flash-next").addEventListener("click", () => showFlash(activeFlash + 1));
-$("#flash-select").addEventListener("click", () => {
-  const flash = flashes[activeFlash];
-  goToIdea(
-    flash.style,
-    `Me inspira el flash «${flash.title}» (${flash.subtitle.toLowerCase()}). Me gustaría explorar una pieza con esta dirección.`,
-  );
-});
-
 // Import animation only after the first render; document content does not depend on it.
 let motionModules;
 let motionSetupVersion = 0;
+const entryHash = location.hash;
+let entryAligned = false;
+let entryInterrupted = false;
+for (const event of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
+  window.addEventListener(event, () => { entryInterrupted = true; }, { once: true, passive: true });
+}
+const pageLoaded = document.readyState === 'complete' ? Promise.resolve()
+  : new Promise((resolve) => window.addEventListener('load', resolve, { once: true }));
 async function setupScrollMotion() {
   const version = ++motionSetupVersion;
   if (reducedMotion) return;
@@ -273,18 +145,14 @@ async function setupScrollMotion() {
         scrollTrigger: { trigger: el, start: "top 94%", once: true },
       }),
     );
-    gsap.to(".press-hero__scene", {
-      yPercent: 12, ease: "none",
-      scrollTrigger: { trigger: ".press-hero", start: "top top", end: "bottom top", scrub: true },
+    const manifestoTimeline = gsap.timeline({
+      scrollTrigger: { trigger: '#nosotros', start: 'top top', end: 'bottom bottom', scrub: .6 },
     });
-    gsap.fromTo(".manifesto-story > .manifesto-word", { opacity: .58, y: 10 }, {
-      opacity: 1, y: 0, stagger: .1, ease: "none",
-      scrollTrigger: { trigger: ".manifesto-composition", start: "top 82%", end: "bottom 58%", scrub: .25 },
-    });
-    gsap.fromTo(".editorial-tag", { rotation: -6, scale: .95 }, {
-      rotation: 1, scale: 1, stagger: .2, ease: "none",
-      scrollTrigger: { trigger: ".manifesto-composition", start: "top 85%", end: "bottom 60%", scrub: .4 },
-    });
+    manifestoTimeline.fromTo('.manifesto-word', { opacity: .2, scale: .87, y: 6 }, {
+      opacity: 1, scale: 1, y: 0, stagger: .13, duration: .32, ease: 'power2.out',
+    }, .2).fromTo('.manifesto-note--first', { y: 25, rotation: -12 }, { y: 0, rotation: -6, duration: 1 }, .3)
+      .fromTo('.manifesto-note--last', { y: 25, rotation: 10, opacity: 0 }, { y: 0, rotation: 5, opacity: 1, duration: .6 }, 3.8)
+      .to({}, { duration: .5 });
     const characterTimeline = gsap.timeline({
       scrollTrigger: { trigger: ".character-section", start: "top top", end: "bottom bottom", scrub: .45 },
     });
@@ -301,29 +169,22 @@ async function setupScrollMotion() {
         scrub: true,
       },
     });
-    gsap.from(".care-photo", {
-      rotation: 2,
-      y: 40,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".care-grid",
-        start: "top bottom",
-        end: "center center",
-        scrub: 1,
-      },
-    });
-    gsap.from(".footer-wordmark", {
-      yPercent: 20,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".footer",
-        start: "top bottom",
-        end: "bottom bottom",
-        scrub: 0.6,
-      },
-    });
   });
-  document.fonts.ready.then(() => ScrollTrigger.refresh());
+  editorialCleanup?.();
+  editorialCleanup = initEditorialSections({ gsap, ScrollTrigger, reducedMotion, onChooseStyle: goToIdea });
+  Promise.all([document.fonts.ready, pageLoaded]).then(() => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  })).then(() => {
+    if (reducedMotion || version !== motionSetupVersion) return;
+    ScrollTrigger.refresh();
+    // Align after native restoration and pin measurement, unless the visitor has moved.
+    if (!entryAligned) {
+      entryAligned = true;
+      if (!entryInterrupted && entryHash && entryHash !== '#inicio' && location.hash === entryHash) {
+        document.getElementById(entryHash.slice(1))?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      }
+    }
+  });
 }
 // Import WebGL near its section; render-on-demand inside studio.js saves battery.
 const studioObserver = new IntersectionObserver(
@@ -345,11 +206,11 @@ const studioObserver = new IntersectionObserver(
 );
 studioObserver.observe($("#estudio"));
 const studioCopy = [
-  ["Pasa al taller.", "Mira las paredes. Si un dibujo te detiene, ya tenemos de qué hablar."],
-  ["Aquí nace el trazo.", "Bobinas, aguja y mano. Acércate a la máquina que convierte una línea en piel."],
-  ["Antes de la tinta.", "Pide ver el material y pregunta cómo se prepara tu sesión. Mereces una respuesta clara."],
-  ["A tu ritmo.", "¿Nervios? Dilo. Una pausa o un minuto más también son parte de tu pieza."],
-  ["Que se sienta tuyo.", "De la pared al papel. Señala lo que te atrae y dale tu propia vuelta."],
+  ["Un lugar para crear.", "Luz para ver cada detalle. Espacio para pensar. Una mesa ordenada y una conversación tranquila: así debería empezar tu próxima pieza."],
+  ["Cada trazo, su herramienta.", "La agrupación cambia el resultado: 3RL para líneas finas, 7RL para un trazo más firme y 13RM para sombrear. La elección depende del diseño, la piel y la mano del artista."],
+  ["La confianza se prepara.", "Antes de empezar, pide ver agujas estériles de un solo uso, barreras limpias y tintas identificadas. Preguntar cómo se prepara tu sesión también es cuidar tu piel."],
+  ["Aquí puedes decir pausa.", "Un apoyo cómodo, luz bien dirigida y tiempo para acomodarte. Si necesitas parar, cambiar de postura o hacer una pregunta, dilo. Tu tranquilidad importa."],
+  ["Referencias, no copias.", "Mira los contrastes, las líneas y cómo una pieza vive sobre el cuerpo. Guarda lo que te mueve. Lo usaremos para dibujar algo con identidad propia."],
 ];
 $("#studio-canvas").addEventListener("studiochapter", (event) => {
   const copy = studioCopy[event.detail.chapter];
@@ -366,9 +227,13 @@ const bookObserver = new IntersectionObserver(
       const { initSketchbook } = await import("./sketchbook.js");
       sketchbook = await initSketchbook($("#book-canvas"), {
         reducedMotion,
-        onPageChange: updateFlash,
+
       });
       sketchbook?.setReducedMotion(reducedMotion);
+      if (motionModules) {
+        const [, { ScrollTrigger }] = await motionModules;
+        requestAnimationFrame(() => ScrollTrigger.refresh());
+      }
     } catch {
       $("#book-canvas").classList.add("book-is-fallback");
     }
@@ -456,6 +321,6 @@ atmosphereObserver.observe($(".press-hero"));
 setMotion(reducedMotion);
 const destroyIntro = startPressIntro({ getReducedMotion: () => reducedMotion });
 if (import.meta.hot) import.meta.hot.dispose(() => {
-  destroyNavigation?.(); destroyIntro?.(); scrollMotion?.revert();
+  destroyNavigation?.(); destroyIntro?.(); scrollMotion?.revert(); editorialCleanup?.();
   studio?.destroy?.(); sketchbook?.destroy?.(); atmosphereObserver.disconnect();
 });

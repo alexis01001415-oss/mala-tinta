@@ -319,6 +319,41 @@ body.mt-nav-open { overflow: hidden; }
 @media (max-height: 560px) {
   .mt-nav__spread { align-content: start; }
 }
+/* Each printed photograph is hung differently; photographs never use 3D renders. */
+@media (min-width:760px) and (min-height:480px) {
+  .mt-nav__print[data-mounting="top"]::before {
+    width:48%; height:10%; top:-4.5%; left:26%; right:auto; transform:rotate(-5deg);
+    background-image:url('/images/materials/masking-tape.webp');
+  }
+  .mt-nav__print[data-mounting="top"]::after { display:none; }
+  .mt-nav__print[data-mounting="sides"]::before {
+    width:36%; height:9%; left:-15%; top:32%; transform:rotate(86deg);
+    background-image:url('/images/materials/black-tape.webp');
+  }
+  .mt-nav__print[data-mounting="sides"]::after {
+    display:block; width:36%; height:9%; right:-15%; bottom:26%; transform:rotate(94deg);
+    background-image:url('/images/materials/masking-tape.webp');
+  }
+  .mt-nav__print[data-mounting="corners"]::before {
+    width:38%; height:10%; left:auto; right:-10%; top:-1%; transform:rotate(42deg);
+    background-image:url('/images/materials/black-tape.webp');
+  }
+  .mt-nav__print[data-mounting="corners"]::after {
+    display:block; width:38%; height:9%; left:-10%; right:auto; bottom:0; transform:rotate(42deg);
+    background-image:url('/images/materials/masking-tape.webp');
+  }
+  .mt-nav__print[data-mounting="double"]::before {
+    width:35%; height:10%; left:-5%; top:-2%; transform:rotate(-24deg);
+    background-image:url('/images/materials/masking-tape.webp');
+  }
+  .mt-nav__print[data-mounting="double"]::after {
+    display:block; width:34%; height:9%; right:-5%; top:-2%; bottom:auto; transform:rotate(26deg);
+    background-image:url('/images/materials/black-tape.webp');
+  }
+  .mt-nav__print[data-mounting="sides"] { padding-bottom:5%; border-radius:3px; }
+  .mt-nav__print[data-mounting="double"] { padding-bottom:12%; }
+  .mt-nav__image img { filter:saturate(.7) contrast(1.04); }
+}
 @media (prefers-reduced-motion: reduce) {
   .mt-header *,
   .mt-header::before,

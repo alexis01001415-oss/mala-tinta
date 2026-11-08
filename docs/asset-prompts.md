@@ -33,3 +33,21 @@ Final generation prompt:
 Final generation prompt:
 
 > Use case: photorealistic-natural. Asset type: editorial image for a premium independent tattoo studio website. Extreme cinematic closeup of tattoo artist's black nitrile-gloved hands holding a finely crafted black rotary tattoo pen above a client's adult forearm with a beautiful intricate blackwork snake tattoo and purple stencil lines, in a warm authentic analog tattoo studio. Non-graphic, no blood, clean professional work surface, immaculate tools. Moody photographic lighting, tactile glint of steel, shallow depth of field, almost monochrome earthy black and cream tones with subtle warm skin. Crop shows ONLY artist's hands, tool, adult forearm and blurred dark studio background, no faces. Raw editorial 35mm film photograph, fine grain, sophisticated and authentic craft, no typography, no watermark or logo. Wide landscape 3:2 composition, leave quieter dark area at right.
+
+## Fotografías editoriales de la iteración 3
+
+Nueve imágenes nuevas generadas con ImageGen; se distribuyen como WebP en `public/images/editorial/`. Son escenas conceptuales originales, no trabajos o clientes de un estudio existente. Los originales de generación no son necesarios para compilar.
+
+| Archivo | Brief de dirección visual |
+| --- | --- |
+| owner.webp | Retrato fotográfico de un tatuador adulto ficticio, cabello oscuro, tatuajes visibles y camiseta negra, en un estudio cálido. Se usa como Nico Cruz. |
+| blackwork.webp | Pieza negra de serpiente y flores sobre brazo adulto, fotografía editorial de piel y tinta. |
+| tradicional.webp | Tatuaje tradicional de ave y rosa, contornos claros y color sobre piel. |
+| fine-line.webp | Tatuaje botánico de línea fina sobre antebrazo adulto. |
+| realismo.webp | Tatuaje en negro y gris con rostro de escultura, luces y volumen sobre brazo. |
+| preparation.webp | Mesa de trabajo limpia con bandeja, material envuelto, guantes y máquina. |
+| consultation.webp | Conversación creativa y bocetos sobre una mesa de estudio. |
+| care.webp | Material de cuidado y orientación, fotografía de detalle serena. |
+| studio.webp | Interior cálido de estudio, sillón, lámpara y materiales organizados. |
+
+Los briefs se interpretan visualmente y no son evidencia de cumplimiento sanitario. El script opcional `scripts/prepare-editorial.mjs` optimiza tamaño y formato de los originales.

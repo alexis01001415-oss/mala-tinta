@@ -1,10 +1,10 @@
-@font-face{font-family:'Bowlby One SC';font-style:normal;font-display:swap;font-weight:400;src:url('/fonts/bowlby-one-sc-latin.woff2') format('woff2')}
+@font-face{font-family:'Bowlby One SC';font-style:normal;font-display:swap;font-weight:400;src:url('./fonts/bowlby-one-sc-latin.woff2') format('woff2')}
 .press-intro{display:none}
 html[data-press-intro]{overflow:hidden}
-html[data-press-intro] .press-intro{display:grid;position:fixed;inset:0;z-index:200;overflow:hidden;isolation:isolate;place-items:center;background:#0b0b0b;color:#efeee8}
-.press-intro__title{position:relative;z-index:1;font:400 clamp(70px,16vw,250px)/.96 'Bowlby One SC',Impact,sans-serif;letter-spacing:1.5px;transform:rotate(-3deg)}
-.press-intro__mask{display:block;overflow:hidden;padding:.035em .1em .08em}
-.press-intro__word{display:block}
-.press-intro__shutter{position:absolute;inset:0;background:#c80912;transform:translateX(-105%) skewX(-10deg);transform-origin:bottom}
-#skip-loader{position:absolute;z-index:2;bottom:max(32px,env(safe-area-inset-bottom));right:clamp(24px,5vw,80px);min-height:48px;padding:12px 18px;font:600 14px/1.4 Raleway,sans-serif;letter-spacing:1.5px;border:1px solid #efeee8;background:#0b0b0b;color:#efeee8;cursor:pointer}
+html[data-press-intro] .press-intro{display:grid;position:fixed;inset:0;z-index:200;overflow:hidden;isolation:isolate;place-items:center;color:#efeee8}
+.press-intro__wipe{position:absolute;inset:0;width:100%;height:100%;fill:#0b0b0b;z-index:-1}
+.press-intro__logo{width:min(620px,80vw);height:auto;overflow:visible;transform:rotate(-3deg)}
+.press-intro__logo text{font:400 122px 'Bowlby One SC',Impact,sans-serif;letter-spacing:1.5px;fill:#efeee8}
+.press-intro__underline{fill:none;stroke:#ef0606;stroke-width:13;stroke-linecap:round}
+#skip-loader{position:absolute;z-index:2;bottom:max(32px,env(safe-area-inset-bottom));right:clamp(24px,5vw,80px);min-height:48px;padding:12px 18px;font:600 14px/1.4 Raleway,sans-serif;letter-spacing:.7px;border:1px solid #efeee860;background:#0b0b0b;color:#efeee8;cursor:pointer}
 #skip-loader:focus-visible{outline:3px solid #efeee8;outline-offset:5px}

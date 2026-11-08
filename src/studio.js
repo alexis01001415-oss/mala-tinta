@@ -1,3 +1,4 @@
+const asset = (path) => `${import.meta.env.BASE_URL}${path}`;
 const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
 const chapters = [0, .25, .5, .75, 1];
 const chapterPhotos = [
@@ -19,7 +20,7 @@ const chapterPhotos = [
   ],
   [
     "studio-pieza.webp",
-    "Láminas de serpiente, flor, daga y polilla sujetas con pinzas sobre la repisa de dibujo.",
+    "Fotografías conceptuales de tatuajes impresas y sujetas con pinzas sobre la repisa de dibujo.",
   ],
 ];
 
@@ -58,7 +59,7 @@ function initPhotoTour(
     chapter = index;
     if (photo) {
       const [file, description] = chapterPhotos[index];
-      photo.src = `/models/${file}`;
+      photo.src = asset(`models/${file}`);
       photo.alt = description;
     }
     announceChapter(container, section, buttons, index);
@@ -200,7 +201,7 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
     0.35,
   );
   const draco = new DRACOLoader();
-  draco.setDecoderPath("/models/draco/");
+  draco.setDecoderPath(asset("models/draco/"));
   draco.setDecoderConfig({ type: "wasm" });
   draco.setWorkerLimit(1);
   const loader = new GLTFLoader();
@@ -495,7 +496,7 @@ export async function initStudio(container, { reducedMotion = false } = {}) {
   };
 
   try {
-    const gltf = await loader.loadAsync("/models/studio.glb", (event) => {
+    const gltf = await loader.loadAsync(asset("models/studio.glb"), (event) => {
       if (event.total)
         container.dataset.loadProgress = String(
           Math.round((event.loaded / event.total) * 100),
