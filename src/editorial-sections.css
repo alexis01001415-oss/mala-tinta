@@ -60,7 +60,7 @@
 .care-stack { padding:0; background:#0b0b0b; }
 .care-stack__stage { padding:calc(var(--mt-nav-height) + 32px) var(--pad) 112px; }
 .care-stack__heading { max-width:1240px; margin:0 auto 64px; display:flex; justify-content:space-between; align-items:end; gap:32px; }
-.care-stack__heading h2 { max-width:800px; font-size:clamp(38px,5vw,76px); }
+.care-stack__heading h2 { max-width:800px; min-width:0; overflow-wrap:anywhere; hyphens:auto; font-size:clamp(38px,5vw,76px); }
 .care-stack__heading > p { max-width:290px; color:#c9c5bd; }
 .care-stack__deck { max-width:1240px; margin:auto; display:grid; gap:96px; }
 .care-stack__card { display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:clamp(48px,8vw,128px); }
@@ -177,6 +177,7 @@
   .closing-wall__ticket { margin-right:0; width:calc(100% - 12px); }
   .closing-wall__top h2 { font-size:clamp(37px,10vw,56px); }
   .closing-wall__links { justify-content:space-between; gap:12px 24px; font-size:14px; }
+  .closing-wall__wordmark { font-size:clamp(38px,13.4vw,80px); }
   .closing-wall .footer-bottom { display:flex; flex-direction:column; align-items:start; }
   .closing-wall .footer-bottom > span:last-child { display:block; text-align:left; }
 }
